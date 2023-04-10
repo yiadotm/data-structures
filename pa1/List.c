@@ -236,3 +236,40 @@ void movePrev(List L) {
    }
 }
 
+// moveNext()
+// If cursor is defined and not at back, move cursor one
+// step toward the back of L; if cursor is defined and at
+// back, cursor becomes undefined; if cursor is undefined
+// do nothing
+void moveNext(List L) {
+   if (L->index != -1 && L->cursor != L->back) {
+      L->index++;
+      L->cursor = L->cursor->next;
+   }
+
+   if (L->index != -1 && L->cursor == L->front) {
+      L->index = -1;
+   }
+
+}
+
+// prepend()
+// Insert new element into L. If L is non-empty,
+// insertion takes place before front element.
+void prepend(List L, int x) {
+   Node N = newNode(x);
+
+   if( L==NULL ){
+      printf("Queue Error: calling Enqueue() on NULL Queue reference\n");
+      exit(EXIT_FAILURE);
+   }
+   
+   if( isEmpty(L) ) { 
+      L->front = L->back = N; 
+   }else{ 
+      L->front->next = N; 
+      L->front = N; 
+   }
+   L->length++;
+}
+
