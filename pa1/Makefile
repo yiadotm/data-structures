@@ -3,27 +3,34 @@
 # 2023 Spring CSE1010 PA1
 # Makefile
 # Makefile for PA1
+# make                   makes Lex
+# make ListClient        makes ListClient
+# make clean             removes all binaries
+# make checkClient       checks ListClient for memory errors
+# make checkLex          checks Lex for memory errors
 #-----------------------------------------------------------------------------
-SHELL := /bin/sh
-CC = clang
-CFLAGS = -Wall -Wpedantic -Werror -Wextra 
-LIBFLAGS = -lm 
-EXECBIN  = Lex
+Lex : Lex.o List.o
+	gcc -std=c17 -Wall -o Lex Lex.o List.o
 
+Lex.o : Lex.c List.h
+	gcc -std=c17 -Wall -c Lex.c
 
-SOURCES = $(wildcard *.c)
+ListClient: ListClient.o List.o
+	gcc -std=c17 -Wall -o ListClient ListClient.o List.o
 
-OBJECTS = $(SOURCES:%.c=%.o)
+ListClient.o : ListClient.c List.h
+	gcc -std=c17 -Wall -c ListClient.c
 
-.PHONY: all clean
+List.o : List.c List.h
+	gcc -std=c17 -Wall -c List.c
 
-all: $(EXECBIN)
-$(EXECBIN): $(OBJECTS)
-	$(CC) -o $@ $^ $(LIBFLAGS)
+clean :
+	rm -f Lex ListClient Lex.o ListClient.o List.o
 
-clean:
-	rm -f $(EXECBIN) $(OBJECTS)
+checkClient : 
+	valgrind --leak-check=full ListClient
 
-%.o : %.c
-	$(CC) $(CFLAGS) -c $<
+checkLex :
+	valgrind --leak-check=full Lex in3 blah3
+
 
