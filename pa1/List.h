@@ -6,8 +6,11 @@
 *********************************************************************************/ 
 #include <stdio.h>
 #include <stdbool.h>
+
+#define UNUSED(x) (void)x 
 typedef int ListElement;
 typedef struct ListObj* List;
+
 
 // Constructors-Destructors ---------------------------------------------------
 List newList(void); // Creates and returns a new empty List.
