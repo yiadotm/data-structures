@@ -9,30 +9,39 @@
 # make checkClient       checks ListClient for memory errors
 # make checkLex          checks Lex for memory errors
 #-----------------------------------------------------------------------------
-SHELL := /bin/sh
-CC = clang
-CFLAGS = -Wall -Werror -Wextra -Wpedantic 
-LFLAGS = -lm
-
-all: Lex List ListClient ListTest format
-
+all: Lex ListClient ListTest
 Lex : Lex.o List.o
-	$(CC) -o $@ $^ $(LFLAGS)
+	gcc -std=c17 -Wall -o Lex Lex.o List.o
+
+Lex.o : Lex.c List.h
+	gcc -std=c17 -Wall -c Lex.c
 
 ListClient: ListClient.o List.o
-	$(CC) -o $@ $^ $(LFLAGS)
+	gcc -std=c17 -Wall -o ListClient ListClient.o List.o
+
+ListClient.o : ListClient.c List.h
+	gcc -std=c17 -Wall -c ListClient.c
+
+List.o : List.c List.h
+	gcc -std=c17 -Wall -c List.c
+
+ModelListTest: ModelListTest.o List.o
+	gcc -std=c17 -Wall -o ModelListTest ModelListTest.o List.o
+
+ModelListTest.o: ModelListTest.c List.h
+	gcc -std=c17 -Wall -c ModelListTest.c
 
 ListTest: ListTest.o List.o
-	$(CC) -o $@ $^ $(LFLAGS)
+	gcc -std=c17 -Wall -o ListTest ListTest.o List.o
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $<
+ListTest.o: ListTest.c List.h
+	gcc -std=c17 -Wall -c ListTest.c
 
-clean:
-	rm -f keygen encrypt decrypt *.o
+clean :
+	rm -f Lex ListClient Lex.o ListClient.o List.o
 
-cleankeys:
-	rm -f *.{pub,priv}
+checkClient : 
+	valgrind --leak-check=full ListClient
 
-format:
-	clang-format -i -style=file *.[ch]
+checkLex :
+	valgrind --leak-check=full Lex in3 blah3
