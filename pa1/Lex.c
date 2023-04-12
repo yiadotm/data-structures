@@ -40,11 +40,36 @@ int main(int argc, char **argv) {
     //https://www.geeksforgeeks.org/c-program-count-number-lines-file/
     int lines = 0;
     char c;
-    for (c = getc(infile); c != EOF; c = getc(infile)) {
-        if (c == '\n') {
-            lines++;
-        }
+    char *arr = (char*)malloc(sizeof(char));
+
+    while (infile != EOF) {
+        fscanf(infile, "%d", &arr[lines]);
+        lines++;
     }
 
+    // for (c = getc(infile); c != EOF; c = getc(infile)) {
+    //     if (c == '\n') {
+    //         lines++;
+    //     }
+    // }
+    List L = newList();
+    moveFront(L);
+    append(L, &arr[0]);
+    for(int i = 1; i < lines; i++) {
+        for (int j = 0; j < length(L); j++) {
+            moveFront(L);
+            if (strcmp(&arr[i], get(L)) > 0) {
+                insertBefore(L, &arr[i]);
+            }
+            if (index(L) == -1) {
+                append(L, &arr[i]);
+                break;
+            }
+        }
+
+    }
+    printList(outfile, L);
+
     fclose(infile);
+    fclose(outfile);
 }
