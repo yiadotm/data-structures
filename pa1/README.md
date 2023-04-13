@@ -15,7 +15,7 @@
 
 ### To run Lex:  
 > make Lex  
-> ./Lex <input file> <output file>   
+> ./Lex *input file* *output file*  
 
 ### To run ListTest:  
 > make ListTest  
