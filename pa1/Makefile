@@ -37,6 +37,18 @@ ListTest: ListTest.o List.o
 ListTest.o: ListTest.c List.h
 	gcc -std=c17 -Wall -c ListTest.c
 
+Test: test.o List.o
+	gcc -std=c17 -Wall -o test test.o List.o
+
+Test.o: test.c List.h
+	gcc -std=c17 -Wall -c test.c
+
+File: file.o List.o
+	gcc -std=c17 -Wall -o file file.o List.o
+
+File.o: file.c List.h
+	gcc -std=c17 -Wall -c file.c
+
 clean :
 	rm -f Lex ListClient Lex.o ListClient.o List.o
 

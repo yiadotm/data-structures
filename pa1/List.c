@@ -99,7 +99,7 @@ int index(List L) {
         exit(EXIT_FAILURE);
     }
 
-    if (L->index < 0 || L->index > length(L)) {
+    if (L->index < 0 || L->index >= length(L)) {
         return -1;
     }
     return(L->index);
@@ -130,7 +130,7 @@ int back(List L) {
 // get()
 // Return the value at the index of the cursor element.
 // Pre: length()>0, index()>=0
-int get(List L) {
+ListElement get(List L) {
    if( L==NULL ){
       printf("List Error: calling get() on NULL List reference\n");
       exit(EXIT_FAILURE);
@@ -530,6 +530,7 @@ void printList(FILE* out, List L) {
       fprintf(out, "%d ", N->data);
       N = N->next;
    }
+   printf("\n");
    freeNode(&N);
 
 }
@@ -547,5 +548,8 @@ List copyList(List L) {
       append(copy, N->data);
       N= N->next;
    }
+   copy->length = L->length;
+   copy->index = -1;
+
    return copy;
 }
