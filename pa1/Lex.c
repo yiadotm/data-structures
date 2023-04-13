@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
         if (lines == 10) {
             arr = (char**)realloc(arr, (lines *2)* sizeof(char*));
         }
-        arr[lines-1] = (char *)malloc((strlen(c) + 1) * sizeof(char));
+        arr[lines-1] = (char *)malloc((strlen(c)) * sizeof(char));
         //printf("%s", c);
         //stackoverflow
         size_t len = strlen(c);
@@ -126,7 +126,8 @@ int main(int argc, char *argv[]) {
 
     }
     printList(stdout, L);
-
+    free(arr);
+    freeList(&L);
     fclose(infile);
     fclose(outfile);
 }
