@@ -1,6 +1,6 @@
 # Assignment 1 for CSE101 Spring Quarter 2023  
 
-This assignment has 6 files:  
+##This assignment has 6 files:  
 - Lex.c  
 > The main executable for this program. It reads a specified input file and sorts the file in lexiographic order into a specified output file.  
 - List.c  
@@ -13,6 +13,10 @@ This assignment has 6 files:
 > This file.  
 - Makefile  
 
-To run Lex run:  
+###To run Lex:  
 > make Lex
-> ./Lex input
+> ./Lex <\input file> <\outputfile>   
+
+###To run ListTest:  
+> make ListTest
+> ./ListTest  
