@@ -184,9 +184,10 @@ void clear(List L) {
       return;
    }  
    //freeList(L);
-   L->front = L->back = L->cursor= NULL;
-   L->length = 0;
-   L->index = -1;
+   while(L->front != NULL) {
+      deleteFront(L);
+   }
+
 
 }
 // set()
@@ -447,6 +448,7 @@ void deleteFront(List L) {
    } 
    L->length--;
    freeNode(&N);
+   N = NULL;
 
 }
 
@@ -472,6 +474,7 @@ void deleteBack(List L) {
    }
    L->back = N->prev;
    freeNode(&N);
+   N = NULL;
    L->length--;
 
 }
@@ -506,12 +509,12 @@ void delete(List L) {
    if (N->next == NULL) {
       L->cursor = NULL;
       L->index = -1;
-      freeNode(&N);
       return;
    }   
    L->cursor->next->prev = L->cursor->prev;
    L->cursor->prev->next = L->cursor->next;
-   freeNode(&N);
+   freeNode(&L->cursor);
+   L->cursor = NULL;
    L->index = -1;
    L->length--;
 

@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
 
    // check command line for correct number of arguments
    if( argc != 3 ){
-      printf("Usage: %s <input file> <output file>\n", argv[0]);
+      fprintf(stderr, "Usage: %s <input file> <output file>\n", argv[0]);
       exit(1);
    }
    // open files for reading and writing 
@@ -56,8 +56,9 @@ int main(int argc, char *argv[]) {
     //https://www.geeksforgeeks.org/c-program-count-number-lines-file/
 
     int lines = 0;
-    char **arr = (char**)calloc(10, sizeof(char*));
-    char c[300];
+    char **arr = NULL;
+    arr = (char**)calloc(10, sizeof(char*));
+    char c[1000];
 
 
     // for (c = gets(infile); c != EOF; c = gets(infile)) {
@@ -71,19 +72,22 @@ int main(int argc, char *argv[]) {
     //     lines++;
     // }
     //printf("pog\n");
+
+
     while (fgets(c, 300, infile) != NULL) {
         lines++;
         //fscanf(infile, "%s", &arr[lines]);
-        if (lines == 10) {
-            arr = (char**)realloc(arr, (lines *2)* sizeof(char*));
+        if (lines % 10 == 0) {
+            arr = (char**)realloc(arr, 10 * sizeof(char*));
         }
-        arr[lines-1] = (char *)malloc((strlen(c)) * sizeof(char));
+        arr[lines-1] = (char *)malloc((strlen(c) + 1) * sizeof(char));
         //printf("%s", c);
         //stackoverflow
         size_t len = strlen(c);
         if (len > 0 && c[len-1] == '\n') {
             c[--len] = '\0';
         }
+        
         strcpy(arr[lines-1], c);
 
     }
@@ -126,8 +130,15 @@ int main(int argc, char *argv[]) {
 
     }
     printList(stdout, L);
+    
+    for(size_t i = 0; i < sizeof(arr); i++){
+        free(arr[i]);
+        arr[i] = NULL;
+    }
     free(arr);
+    arr = NULL;
     freeList(&L);
+    L = NULL;
     fclose(infile);
     fclose(outfile);
 }
