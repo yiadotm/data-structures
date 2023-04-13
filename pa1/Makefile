@@ -50,7 +50,7 @@ File.o: file.c List.h
 	gcc -std=c17 -Wall -c file.c
 
 clean :
-	rm -f Lex ListClient Lex.o ListClient.o List.o
+	rm -f Lex ListClient Lex.o ListClient.o List.o ListTest ListTest.o
 
 checkClient : 
 	valgrind --leak-check=full ListClient

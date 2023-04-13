@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
         lines++;
         //fscanf(infile, "%s", &arr[lines]);
         if (lines % 10 == 0) {
-            arr = (char**)realloc(arr, 10 * sizeof(char*));
+            arr = (char**)realloc(arr, (lines +10) * sizeof(char*));
         }
         arr[lines-1] = (char *)malloc((strlen(c) + 1) * sizeof(char));
         //printf("%s", c);
@@ -129,7 +129,12 @@ int main(int argc, char *argv[]) {
         }
 
     }
-    printList(stdout, L);
+    moveFront(L);
+    for (int i = 0; i < length(L); i++) {
+        fprintf(outfile, "%s\n", arr[get(L)]);
+        moveNext(L);
+    }
+    //fprintf(outfile, "\n");
     
     for(size_t i = 0; i < sizeof(arr); i++){
         free(arr[i]);
