@@ -14,9 +14,9 @@
 #### Makefile  
 
 ### To run Lex:  
-> make Lex
+> make Lex  
 > ./Lex <\input file> <\outputfile>   
 
 ### To run ListTest:  
-> make ListTest
+> make ListTest  
 > ./ListTest  
