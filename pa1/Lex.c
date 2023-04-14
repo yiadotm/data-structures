@@ -136,14 +136,17 @@ int main(int argc, char *argv[]) {
     }
     //fprintf(outfile, "\n");
     
-    for(size_t i = 0; i < sizeof(arr); i++){
+    for(size_t i = 0; i < lines; i++){
         free(arr[i]);
         arr[i] = NULL;
     }
+
     free(arr);
     arr = NULL;
     freeList(&L);
     L = NULL;
     fclose(infile);
     fclose(outfile);
+    return 0;
 }
+

@@ -446,6 +446,7 @@ void deleteFront(List L) {
       L->front->prev = NULL;
 
    } 
+   L->index--;
    L->length--;
    freeNode(&N);
    N = NULL;
@@ -505,14 +506,35 @@ void delete(List L) {
    // printf("%d\n", L->cursor->next->data);
    // L->cursor = NULL;
    // L->index = -1;
-   Node N = L->cursor;
-   if (N->next == NULL) {
-      L->cursor = NULL;
-      L->index = -1;
+   // Node N = L->cursor;
+   // if (N->next == NULL) {
+   //    //printf("here er\n");
+   //    freeNode(&L->cursor);
+   //    L->cursor = NULL;
+   //    L->index = -1;
+   //    L->length--;
+   //    return;
+   // }   
+   if (L->cursor == L->back) {
+      deleteBack(L);
       return;
-   }   
-   L->cursor->next->prev = L->cursor->prev;
-   L->cursor->prev->next = L->cursor->next;
+   }
+    if (L->cursor == L->front) {
+      deleteFront(L);
+      return;
+   }  
+   //printf("here 7\n");
+   if (L->cursor->next != NULL) {
+      L->cursor->next->prev = L->cursor->prev;
+   }
+   
+   //printf("here 323\n");
+   if (L->cursor->prev != NULL) {
+      L->cursor->prev->next = L->cursor->next;
+   }
+   
+
+   ///printf("here 43\n");
    freeNode(&L->cursor);
    L->cursor = NULL;
    L->index = -1;
