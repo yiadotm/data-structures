@@ -113,12 +113,12 @@ int main(int argc, char* argv[]){
    for(i=0; i<5; i++) moveNext(A); // at index 5
    // printf("index: %d\n", index(A));
    // printf("cursor: %d\n", get(A));
-   insertBefore(A, -1);            // at index 6      //insertBefore()
+   insertBefore(A, 3);            // at index 6      //insertBefore()
    for(i=0; i<9; i++){ moveNext(A); } // at index 15 
-   insertAfter(A, -2);                                //insertAfter
+   insertAfter(A, -33);                                //insertAfter
    //printList(stdout, A);
    //printf("cursor: %d\n", get(A));
-   for(i=0; i<5; i++) movePrev(A); // at index 10
+   for(i=0; i<7; i++) movePrev(A); // at index 12
    
 
    //Test the deletes                                                  
@@ -129,10 +129,10 @@ int main(int argc, char* argv[]){
    printf("Check delete(), deleteFront(), deleteBack()\n");
    printf("------------------------------------------\n");
    printf("\n");
-   printf("List A:                       ");
+   printf("List A:                      ");
    printList(stdout,A);
    printf("\nCompare with actual results: ");
-   printf(" 2 3 4 5 -1 6 7 8 9 11 12 13 14 15 -2 16 17 18 19");
+   printf("3 5 7 9 3 11 13 17 19 21 23 25 27 29 -33 31 33 ");
    printf("\n\n");   
 
    //printf("%d\n", length(A));
@@ -198,7 +198,7 @@ Compare with actual results: 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1
 Check delete(), deleteFront(), deleteBack()
 ------------------------------------------
 
-List A:                       2 3 4 5 -1 6 7 8 9 11 12 13 14 15 -2 16 17 18 19 
-Compare with actual results:  2 3 4 5 -1 6 7 8 9 11 12 13 14 15 -2 16 17 18 19
+List A:                       2 3 4 5 3 6 7 8 9 10 11 13 14 15 -33 16 17 18 19 
+Compare with actual results:  2 3 4 5 3 6 7 8 9 10 11 13 14 15 -33 16 17 18 19
 
 */
