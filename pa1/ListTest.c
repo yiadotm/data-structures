@@ -8,6 +8,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
+#include <assert.h>
 #include"List.h"
 
 int main(int argc, char* argv[]){
@@ -17,8 +18,8 @@ int main(int argc, char* argv[]){
    List C = NULL;
    //List owen = newList();
    int i;
-   char * app = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20";
-   char * pre = "20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1";
+   //char * app = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20";
+   ///char * pre = "20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1";
    // printf("Created Lists.\n");
    // List O = newList();
    // append(O, 1);
@@ -55,35 +56,43 @@ int main(int argc, char* argv[]){
       //printf("print good.\n");
       prepend(B,i);
    }
-   printf("Check append() and prepend()\n\n");
-   printf("List A: ");
+   printf("------------------------------------------\n");
+   printf("Check append() and prepend()\n");
+   printf("------------------------------------------\n\n");
+   printf("List A:                      ");
    printList(stdout,A); 
-   printf("Compare with actual results: ");
+   printf("\nCompare with actual results: ");
    printf("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20");
    printf("\n\n");
-   printf("List B: ");
+   printf("List B:                      ");
    printList(stdout,B); 
-   printf("Compare with actual results: ");
+   printf("\nCompare with actual results: ");
    printf("20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1");
    printf("\n\n");
 
    //check for moveFront, index, moveNext
-   printf("Check moveFront(), index(), and moveNext()\n\n");
+   printf("------------------------------------------\n");
+   printf("Check moveFront(), index(), and moveNext()\n");
+   printf("------------------------------------------\n\n");
+   printf("List A:                      ");
    for(moveFront(A); index(A)>=0; moveNext(A)){
       //int i;
       //printf("loop %d\n", i++);
       //printf("%d\n", index(A));
       printf("%d ", get(A));
    }
-   printf("Compare with actual results: ");
+   printf("\nCompare with actual results: ");
    printf("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20");
    printf("\n\n");
    //check for moveBack, index, movePrev
-   printf("Check moveBack(), index(), and movePrev()");
+   printf("------------------------------------------\n");
+   printf("Check moveBack(), index(), and movePrev()\n");
+   printf("------------------------------------------\n\n");
+   printf("List A:                      ");
    for(moveBack(B); index(B)>=0; movePrev(B)){
       printf("%d ", get(B));
    }
-   printf("Compare with actual results: ");
+   printf("\nCompare with actual results: ");
    printf("20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1");
    printf("\n\n");
    //printf("index: %d\n", index(A));
@@ -116,8 +125,15 @@ int main(int argc, char* argv[]){
    delete(A);                                         //deletes 10
    deleteFront(A);                                    //deletes 1
    deleteBack(A);                                     //deletes 20
+   printf("------------------------------------------\n");
+   printf("Check delete(), deleteFront(), deleteBack()\n");
+   printf("------------------------------------------\n");
+   printf("\n");
+   printf("List A:                       ");
    printList(stdout,A);
-   //printf("\n");
+   printf("\nCompare with actual results: ");
+   printf(" 2 3 4 5 -1 6 7 8 9 11 12 13 14 15 -2 16 17 18 19");
+   printf("\n\n");   
 
    //printf("%d\n", length(A));
    assert(length(A) == 19);                           //length should be 19

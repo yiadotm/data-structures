@@ -533,7 +533,7 @@ void printList(FILE* out, List L) {
       fprintf(out, "%d ", N->data);
       N = N->next;
    }
-   printf("\n");
+   //printf("\n");
    freeNode(&N);
 
 }
