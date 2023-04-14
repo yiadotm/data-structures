@@ -1,3 +1,10 @@
+/********************************************************************************* 
+* Danee Dang, dudang
+* 2023 Spring CSE101 PA1
+* Lex.c
+* Program that reads a specified input file 
+* and sorts the file in lexiographic order into a specified output file.
+*********************************************************************************/ 
 #include <getopt.h>
 #include <inttypes.h>
 #include <stdio.h>
