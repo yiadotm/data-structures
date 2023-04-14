@@ -48,7 +48,7 @@ int main(int argc, char* argv[]){
    // printf("\nseparator\n");
 
 
-   for(i=1; i<=20; i++){
+   for(i=1; i<=35; i+=2){
       //printf("loop %d.\n", i);
       append(A,i);
       //printf("append good.\n");
@@ -62,12 +62,12 @@ int main(int argc, char* argv[]){
    printf("List A:                      ");
    printList(stdout,A); 
    printf("\nCompare with actual results: ");
-   printf("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20");
+   printf("1 3 5 7 9 11 13 15 17 19 21 23 25 27 29 31 33 35 ");
    printf("\n\n");
    printf("List B:                      ");
    printList(stdout,B); 
    printf("\nCompare with actual results: ");
-   printf("20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1");
+   printf("35 33 31 29 27 25 23 21 19 17 15 13 11 9 7 5 3 1 ");
    printf("\n\n");
 
    //check for moveFront, index, moveNext
@@ -82,7 +82,7 @@ int main(int argc, char* argv[]){
       printf("%d ", get(A));
    }
    printf("\nCompare with actual results: ");
-   printf("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20");
+   printf("1 3 5 7 9 11 13 15 17 19 21 23 25 27 29 31 33 35 ");
    printf("\n\n");
    //check for moveBack, index, movePrev
    printf("------------------------------------------\n");
@@ -93,7 +93,7 @@ int main(int argc, char* argv[]){
       printf("%d ", get(B));
    }
    printf("\nCompare with actual results: ");
-   printf("20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1");
+   printf("35 33 31 29 27 25 23 21 19 17 15 13 11 9 7 5 3 1 ");
    printf("\n\n");
    //printf("index: %d\n", index(A));
 
@@ -109,7 +109,7 @@ int main(int argc, char* argv[]){
    //test the inserts
    moveFront(A);
    assert(front(A) == 1);                             //front should be 1
-   assert(back(A) == 20);                             //back should be 20
+   assert(back(A) == 35);                             //back should be 20
    for(i=0; i<5; i++) moveNext(A); // at index 5
    // printf("index: %d\n", index(A));
    // printf("cursor: %d\n", get(A));
@@ -136,7 +136,7 @@ int main(int argc, char* argv[]){
    printf("\n\n");   
 
    //printf("%d\n", length(A));
-   assert(length(A) == 19);                           //length should be 19
+   assert(length(A) == 17);                           //length should be 17
    clear(A);
    //printf("%d\n", length(A));
    assert(length(A) == 0);                            //length should be 0
