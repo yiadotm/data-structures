@@ -108,7 +108,7 @@ int index(List L) {
 // front()
 // Returns the value at the front of L.
 // Pre: !isEmpty(L)
-int front(List L) {
+ListElement front(List L) {
    if( L==NULL ){
       printf("List Error: calling front() on NULL List reference\n");
       exit(EXIT_FAILURE);
@@ -119,7 +119,7 @@ int front(List L) {
 // back()
 // Return the value at the back of L.
 // Pre: !isEmpty(L)
-int back(List L) {
+ListELement back(List L) {
    if( L==NULL ){
       printf("List Error: calling back() on NULL List reference\n");
       exit(EXIT_FAILURE);

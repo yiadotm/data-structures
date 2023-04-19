@@ -10,8 +10,8 @@
 typedef int GraphElement;
 typedef struct GraphObj* Graph;
 
-#define MACRO INF
-#define MACRO NIL
+#define INF -1
+#define NIL -2
 /*** Constructors-Destructors ***/
 Graph newGraph(int n); // returns a Graph pointing to a newly created GraphObj representing a graph having
 // n vertices and no edges
