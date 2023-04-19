@@ -47,11 +47,11 @@ Graph newGraph(int n) {
 // frees all heap memory associated with the Graph *pG,
 // then sets the handle *pG to NULL
 void freeGraph(Graph* pG) {
-    if (gP != NULL && *pG != NULL) {
+    if (pG != NULL && *pG != NULL) {
         (*pG)->color = NULL;
         (*pG)->parent = NULL;
         (*pG)->distance = NULL;
-        freeList((*gP)->L);
+        freeList((*pG)->L);
         free((*pG)->color);
         free((*pG)->parent);
         free((*pG)->distance);
