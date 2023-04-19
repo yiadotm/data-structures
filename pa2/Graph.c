@@ -28,12 +28,16 @@ typedef struct GraphObj {
 // Constructors-Destructors ---------------------------------------------------
 // newGraph()
 // returns a Graph pointing to a newly created GraphObj representing a graph having
-// n vertices and no edges
+// n vertices and no edges (size)
 Graph newGraph(int n) {
     Graph G;
     G = malloc(sizeof(GraphObj));
     assert(G!=NULL);
-    G->L = newList();
+    G->L = (List*)malloc(n+1*sizeof(List));
+    for (int i = 1; i < n+1; i++) {
+        G->L[i] = newList();
+    }
+    
     G->color = (GraphElement*)malloc(n+1*sizeof(GraphElement));
     G->parent = (GraphElement*)malloc(n+1*sizeof(GraphElement));
     G->distance = (GraphElement*)malloc(n+1*sizeof(GraphElement));
@@ -48,13 +52,15 @@ Graph newGraph(int n) {
 // then sets the handle *pG to NULL
 void freeGraph(Graph* pG) {
     if (pG != NULL && *pG != NULL) {
-        (*pG)->color = NULL;
-        (*pG)->parent = NULL;
-        (*pG)->distance = NULL;
-        freeList((*pG)->L);
+        for (int i = 0; i < (*pG)->vertices; i++) {
+            freeList(&(*pG)->L[i]);
+        }
         free((*pG)->color);
         free((*pG)->parent);
         free((*pG)->distance);
+        (*pG)->color = NULL;
+        (*pG)->parent = NULL;
+        (*pG)->distance = NULL;
         free(*pG);
         *pG = NULL;
 
@@ -76,7 +82,7 @@ int getOrder(Graph G) {
 }
 
 // getSize()
-// returns the size of the graph
+// returns the size of the graph (edges)
 int getSize(Graph G) {
     if (G==NULL) {
         printf("List Error: calling getSize() on NULL Graph reference\n");
@@ -94,7 +100,7 @@ int getSource(Graph G) {
         exit(EXIT_FAILURE);
     }
     
-    if (G->color[G->label] = -3) {
+    if (G->color[G->label] == WHITE) {
         return NIL;
     }
 
@@ -113,12 +119,13 @@ int getParent(Graph G, int u) {
 
     if (u < 1 || u > getOrder(G)) {
         // printf("List Error: calling getParent() on out of bounds input\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (G->color[u] == WHITE) {
         return NIL;
     }
-    // if (G->color[G->parent] = "w") {
-    //     return NIL;
-    // }
-    return(G->parent);
+    return(G->parent[u]);
 }
 
 // getDist()
@@ -133,13 +140,13 @@ int getDist(Graph G, int u) {
     }
 
     if (u < 1 || u > getOrder(G)) {
-        // printf("List Error: calling getDist() on out of bounds input\n");
+        printf("List Error: calling getDist() on out of bounds input\n");
+        exit(EXIT_FAILURE);
+    }
+    if (G->color[u] == WHITE) {
         return INF;
     }
-    // if (G->color[G->distance] = "w") {
-    //     return INF;
-    // }
-    return(G->distance);
+    return(G->distance[u]);
 
 }
 
@@ -152,23 +159,22 @@ int getDist(Graph G, int u) {
 void getPath(List L, Graph G, int u) {
     if (getSource(G) == NIL) {
         printf("List Error: calling getPath() when getSource(G) == NIL\n");
-        exit(EXIT_FAILURE);        
+        exit(EXIT_FAILURE);       
     }
     if (u < 1 || u > getOrder(G)) {
         printf("List Error: calling getPath() on out of bounds input\n");
-        append(G->L, NIL);
-        return;
+        exit(EXIT_FAILURE); 
     }
-    // if (G->label = 0) {
-    //     append(G->L, NIL);
-    // }
-    int smallDist = 3000;
-    for (int i = 0; i < G->label; i++) {
-        if (G->distance[i] < smallDist) {
-            smallDist = G->distance[i];
-        }
+    if (G->distance[u] == 0) {
+        append(L, NIL);
     }
-    append(L, smallDist);
+    moveFront(G->L[u]);
+    for (int i = 0; i < length(G->L[u]); i++) {
+        append(L, get(G->L[u]));
+        moveNext(G->L[u]);
+    }
+
+
     
 }
 
@@ -178,11 +184,12 @@ void getPath(List L, Graph G, int u) {
 // deletes all edges of G, restoring it to its
 // original (no edge) state
 void makeNull(Graph G) {
-    clear(G->L);
+    for (int i = 0; i < G->vertices; i++) {
+        clear(G->L[i]);
+    }
     G->color = NULL;
     G->parent = NULL;
     G->distance = NULL;
-    G->vertices = 0;
     G->size = 0;
     G->label = 0;
 }
@@ -193,13 +200,22 @@ void makeNull(Graph G) {
 // Pre: two int arguments must lie in the range 1 to getOrder(G).
 void addEdge(Graph G, int u, int v) {
     if (u < 1 || u > getOrder(G)) {
-        printf("List Error: calling getDist() on out of bounds input u\n");
+        printf("List Error: calling addEdge() on out of bounds input u\n");
         return;
     }
     if (v < 1 || v > getOrder(G)) {
-        printf("List Error: calling getDist() on out of bounds input\n");
+        printf("List Error: calling addEdge() on out of bounds input v\n");
         return;
     } 
+    append(G->L[u], v);
+    printf("\n%d: ", u);
+    printList(stdout, G->L[u]);
+    append(G->L[v], u);
+    printf("\n%d: ", v);
+    printList(stdout, G->L[v]);
+    printf("\n");
+
+    G->size++;
        
 }
 
@@ -208,13 +224,46 @@ void addEdge(Graph G, int u, int v) {
 // i.e. v is added to the adjacency List of u (but not u to the adjacency List of v)
 // Pre: two int arguments must lie in the range 1 to getOrder(G).
 void addArc(Graph G, int u, int v) {
+    if (u < 1 || u > getOrder(G)) {
+        printf("List Error: calling addArc() on out of bounds input u\n");
+        return;
+    }
+    if (v < 1 || v > getOrder(G)) {
+        printf("List Error: calling getArc() on out of bounds input v\n");
+        return;
+    } 
+
+    append(G->L[u], v);
 
 }
 // BFS()
 // runs the BFS algorithm on the Graph G with source s,
 // setting the color, distance, parent, and source fields of G accordingly
 void BFS(Graph G, int s) {
-
+    G->label = s;
+    for (int i = 1; i <= G->vertices - s; i++) {
+        G->color[i] = WHITE;
+        G->distance[i] = INF;
+        G->parent[i] = NIL;
+    }
+    G->color[s] = GREY;
+    G->distance[s] = 0;
+    List L = newList();
+    append(L, s);
+    while (L != NULL) {
+        moveFront(L);
+        int i = get(L);
+        deleteFront(L);
+        for (int y = 1; y <= length(G->L[i]); y++) {
+            if (G->color[y] == WHITE) {
+                G->color[y] = GREY;
+                G->distance[y] = G->distance[i] + 1;
+                G->parent[y] = i;
+                append(L, y);
+            }
+        }
+        G->color[i] = BLACK;
+    }
 }
 
 // Other operations -----------------------------------------------------------
@@ -223,5 +272,12 @@ void BFS(Graph G, int s) {
 // prints the adjacency list representation of G 
 // to the file pointed to by out
 void printGraph(FILE* out, Graph G) {
+    for (int i = 1; i <= G->vertices; i++) {
+        List L = newList();
+        fprintf(out, "%d: ", i);
+        getPath(L, G, i);
+        printList(out, L);
+        fprintf(out, "\n");
 
-}
+    }
+}   

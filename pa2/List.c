@@ -119,7 +119,7 @@ ListElement front(List L) {
 // back()
 // Return the value at the back of L.
 // Pre: !isEmpty(L)
-ListELement back(List L) {
+ListElement back(List L) {
    if( L==NULL ){
       printf("List Error: calling back() on NULL List reference\n");
       exit(EXIT_FAILURE);

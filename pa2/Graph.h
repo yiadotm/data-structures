@@ -12,6 +12,9 @@ typedef struct GraphObj* Graph;
 
 #define INF -1
 #define NIL -2
+#define WHITE -3
+#define GREY -4
+#define BLACK -5
 /*** Constructors-Destructors ***/
 Graph newGraph(int n); // returns a Graph pointing to a newly created GraphObj representing a graph having
 // n vertices and no edges
