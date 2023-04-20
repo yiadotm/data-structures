@@ -51,7 +51,7 @@ Graph newGraph(int n) {
 
     G->vertices = n;
     G->size = 0;
-    G->label = 0;
+    G->label = NIL;
     return (G);
 }
 
@@ -60,13 +60,14 @@ Graph newGraph(int n) {
 // then sets the handle *pG to NULL
 void freeGraph(Graph* pG) {
     if (pG != NULL && *pG != NULL) {
-        for (int i = 1; i <= (*pG)->vertices; i++) {
-            freeList(&((*pG)->L[i]));
-        }
-        free((*pG)->L);
-        free((*pG)->color);
-        free((*pG)->parent);
-        free((*pG)->distance);
+        // for (int i = 1; i <= (*pG)->vertices; i++) {
+        //     freeList(&((*pG)->L[i]));
+        // }
+        // free((*pG)->L);
+        // free((*pG)->color);
+        // free((*pG)->parent);
+        // free((*pG)->distance);
+        makeNull(*pG);
         free(*pG);
         *pG = NULL;
 
@@ -104,6 +105,9 @@ int getSource(Graph G) {
         exit(EXIT_FAILURE);
     }
     
+    if (G->label == NIL) {
+        return NIL;
+    }
     if (G->color[G->label] == WHITE) {
         return NIL;
     }
@@ -197,14 +201,21 @@ void getPath(List L, Graph G, int u) {
 // deletes all edges of G, restoring it to its
 // original (no edge) state
 void makeNull(Graph G) {
-    for (int i = 0; i < G->vertices; i++) {
-        clear(G->L[i]);
+    for (int i = 1; i <= G->vertices; i++) {
+        freeList(&(G->L[i]));
+        G->L[i] = NULL;
     }
+    free(G->L);
+    free(G->color);
+    free(G->parent);
+    free(G->distance);
+    G->L = NULL;
     G->color = NULL;
     G->parent = NULL;
     G->distance = NULL;
     G->size = 0;
-    G->label = 0;
+    G->label = NIL;
+
 }
 
 // addArc()
@@ -326,6 +337,8 @@ void BFS(Graph G, int s) {
         }
         G->color[x] = BLACK;
     }
+    freeList(&L);
+    L = NULL;
 }
 
 // Other operations -----------------------------------------------------------
