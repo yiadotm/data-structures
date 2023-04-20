@@ -43,27 +43,38 @@ int main(int argc, char *argv[]) {
    printGraph(outfile, G);
    fprintf(outfile, "\n");
    int dist = 0;
-   
    while(!feof(infile)) {
+   
+      
       fscanf(infile, "%d %d", &u, &v);
       if (u == 0 && v == 0) {
          break;
       }   
       BFS(G, u);
-      fprintf(outfile, "The distance from %d to %d is %d\n", u, v, getDist(G, v));
-      List L = newList;
+      dist = getDist(G, v);
+      if (dist == INF) {
+         fprintf(outfile, "The distance from %d to %d is infinity\n", u, v);
+         
+      } else {
+         fprintf(outfile, "The distance from %d to %d is %d\n", u, v, getDist(G, v));
+      }
+      List L = newList();
       getPath(L, G, v);
       moveFront(L);
-      if (get(L) == INF) {
-         fprintf(outfile, "No %d-%d path exists", u, v);
+      if (dist == INF) {
+         fprintf(outfile, "No %d-%d path exists\n\n", u, v);
+         
       }
       else {
-         fprintf(outfile, "A shortest %d-%d path is : ", u, v);
-         printList(outfile, "\n");
+         fprintf(outfile, "A shortest %d-%d path is: ", u, v);
+         printList(outfile, L);
+         fprintf(outfile, "\n\n");
+
       }
    }
+   
 
-
+   freeGraph(&G);
 
    return 0;
 }
