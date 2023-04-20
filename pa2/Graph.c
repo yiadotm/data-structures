@@ -1,4 +1,9 @@
-
+/********************************************************************************* 
+* Danee Dang, dudang
+* 2023 Spring CSE101 PA2
+* Graph.c
+* File Implementation of Graph ADT.
+*********************************************************************************/
 #include<stdio.h>
 #include<stdlib.h>
 #include<assert.h>
