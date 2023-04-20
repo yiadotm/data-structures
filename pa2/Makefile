@@ -3,6 +3,7 @@
 #
 #  make                     makes FindPath
 #  make GraphClient         makes GraphClient
+#  make GraphTest			make GraphTest
 #  make clean               removes binaries
 #  make checkFind           tests FindPath for memory leaks on in7
 #  make checkClient         tests GraphClient for memory leaks
