@@ -18,10 +18,10 @@ It then finds the shortest path from the following pair of values after the "0-0
 > This file.  
 #### Makefile  
 
-### To run FindPath:  
+##### To run FindPath:  
 > make FindPath  
 > ./FindPath *input_file* *output_file*  
 
-### To run ListTest:  
+##### To run ListTest:  
 > make GraphTest  
 > ./GraphTest  
