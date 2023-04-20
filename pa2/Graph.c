@@ -126,7 +126,7 @@ int getParent(Graph G, int u) {
         exit(EXIT_FAILURE);
     }
 
-    if (G->color[u] == WHITE) {
+    if (getSource(G) == NIL) {
         return NIL;
     }
     return(G->parent[u]);
@@ -147,7 +147,7 @@ int getDist(Graph G, int u) {
         printf("List Error: calling getDist() on out of bounds input\n");
         exit(EXIT_FAILURE);
     }
-    if (G->color[u] == WHITE) {
+    if (getSource(G) == NIL) {
         return INF;
     }
     return(G->distance[u]);
@@ -169,16 +169,25 @@ void getPath(List L, Graph G, int u) {
         printf("List Error: calling getPath() on out of bounds input\n");
         exit(EXIT_FAILURE); 
     }
-        if (G->distance[u] == 0) {
-            append(L, NIL);
-        }
-        moveFront(G->L[u]);
-        for (int i = 1; i <= length(G->L[u]); i++) {
-            append(L, get(G->L[u]));
-            moveNext(G->L[u]);
-        }
+    // if (G->distance[u] == 0) {
+    //     append(L, NIL);
+    // }
+    // moveFront(G->L[u]);
+    // for (int i = 1; i <= length(G->L[u]); i++) {
+    //     append(L, get(G->L[u]));
+    //     moveNext(G->L[u]);
+    // }
 
-
+    if (u == G->label) {
+        append(L, G->label);
+    }
+    else if (G->parent[u] == NIL) {
+        append(L, NIL);
+    }
+    else {
+        getPath(L, G, G->parent[u]);
+        append(L, u);
+    }
     
 }
 
@@ -288,19 +297,32 @@ void BFS(Graph G, int s) {
     }
     G->color[s] = GREY;
     G->distance[s] = 0;
+    G->parent[s] = NIL;
     List L = newList();
     append(L, s);
     while (!isEmpty(L)) {
         moveFront(L);
         int x = get(L);
         deleteFront(L);
-        for (int y = 1; y <= length(G->L[x]); y++) {
+
+        moveFront(G->L[x]);
+        // for y in adj[x]
+        for (int i = 0; i < length(G->L[x]); i++) {
+            int y = get(G->L[x]);
             if (G->color[y] == WHITE) {
                 G->color[y] = GREY;
                 G->distance[y] = G->distance[x] + 1;
+                // printf("dist[%d]: %d, dist[%d] + 1: %d\n", y, G->distance[y], x, G->distance[x] + 1);
                 G->parent[y] = x;
                 append(L, y);
             }
+            if (i == length(G->L[x]) - 1) {
+                
+                //printf("append\n");
+                // printList(stdout, L);
+                break;
+            }  
+            moveNext(G->L[x]);
         }
         G->color[x] = BLACK;
     }
@@ -313,10 +335,10 @@ void BFS(Graph G, int s) {
 // to the file pointed to by out
 void printGraph(FILE* out, Graph G) {
     for (int i = 1; i <= G->vertices; i++) {
-        List L = newList();
+        //List L = newList();
         fprintf(out, "%d: ", i);
-        getPath(L, G, i);
-        printList(out, L);
+        //getPath(L, G, i);
+        printList(out, G->L[i]);
         fprintf(out, "\n");
 
     }
