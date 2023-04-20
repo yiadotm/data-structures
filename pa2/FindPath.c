@@ -1,9 +1,17 @@
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <string.h>
+#include <unistd.h>
+#include "Graph.h"
+#include "List.h"
 int main(int argc, char *argv[]) {
     //int opt = 0;
-    FILE *infile = stdin;
-    FILE *outfile = stdout;
-
+   FILE *infile = stdin;
+   FILE *outfile = stdout;
+   int n = 0;
+   int u = 0;
+   int v = 0;
    // check command line for correct number of arguments
    if( argc != 3 ){
       fprintf(stderr, "Usage: %s <input file> <output file>\n", argv[0]);
@@ -22,7 +30,40 @@ int main(int argc, char *argv[]) {
       exit(1);
    }      
 
+    
+   fscanf(infile, "%d", &n);
+   Graph G = newGraph(n);
+   while (!feof(infile)) {
+      fscanf(infile, "%d %d", &u, &v);
+      if (u == 0 && v == 0) {
+         break;
+      }
+      addEdge(G, u, v);
+   }
+   printGraph(outfile, G);
+   fprintf(outfile, "\n");
+   int dist = 0;
    
+   while(!feof(infile)) {
+      fscanf(infile, "%d %d", &u, &v);
+      if (u == 0 && v == 0) {
+         break;
+      }   
+      BFS(G, u);
+      fprintf(outfile, "The distance from %d to %d is %d\n", u, v, getDist(G, v));
+      List L = newList;
+      getPath(L, G, v);
+      moveFront(L);
+      if (get(L) == INF) {
+         fprintf(outfile, "No %d-%d path exists", u, v);
+      }
+      else {
+         fprintf(outfile, "A shortest %d-%d path is : ", u, v);
+         printList(outfile, "\n");
+      }
+   }
+
+
 
    return 0;
 }
