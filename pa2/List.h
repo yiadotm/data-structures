@@ -4,6 +4,7 @@
 * List.h 
 * Header file for List ADT
 *********************************************************************************/ 
+#pragma once
 #include <stdio.h>
 #include <stdbool.h>
 

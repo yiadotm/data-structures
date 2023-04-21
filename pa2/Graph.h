@@ -4,6 +4,7 @@
 * Graph.h 
 * Header file for Graph ADT
 *********************************************************************************/ 
+#pragma once
 #include <stdio.h>
 #include <stdbool.h>
 #include "List.h"
