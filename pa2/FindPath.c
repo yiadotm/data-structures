@@ -86,5 +86,7 @@ int main(int argc, char *argv[]) {
    
 
    freeGraph(&G);
+   fclose(infile);
+   fclose(outfile);
    return 0;
 }
