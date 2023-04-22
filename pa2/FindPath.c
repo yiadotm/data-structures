@@ -81,6 +81,7 @@ int main(int argc, char *argv[]) {
          fprintf(outfile, "\n\n");
 
       }
+      freeList(&L);
    }
    
 
