@@ -296,14 +296,32 @@ void DFS(Graph G, List S) {
 // returns a reference to a new graph object 
 // representing the transpose of G
 Graph transpose(Graph G) {
-
+    Graph new = newGraph();
+    for (int i = 1; i <= getOrder(G); i++) {
+        moveFront(G->L);
+        for (int j = 0; j < length(G->L); j ++) {
+            int x = get(G->L);
+            addArc(G, x, i);
+        }
+    }
+    new->vertices = getOrder(G);
+    new->size = getSize(G);
 }
 
 //copyGraph()
 // returns a reference to a new graph that 
 // is a copy of G
 Graph copyGraph(Graph G) {
-
+    Graph new = newGraph();
+    new->L = copyList(G->L);
+    for (int i = 1; i <= getOrder(G); i++) {
+        new->color[i] = G->color[i];
+        new->parent[i] = getParent(G, i);
+        new->discover[i] = getDiscover(G, i);
+        new->finish[i] = getFinish(G, i);
+    }
+    new->vertices = getOrder(G);
+    new->size = getSize(G);
 }
 
 //printGraph()
