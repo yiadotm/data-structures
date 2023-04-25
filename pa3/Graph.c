@@ -87,7 +87,7 @@ void freeGraph(Graph* pG) {
 // returns the order of the graph (the vertices)
 int getOrder(Graph G) {
     if (G==NULL) {
-        printf("List Error: calling getOrder() on NULL Graph reference\n");
+        printf("Graph Error: calling getOrder() on NULL Graph reference\n");
         exit(EXIT_FAILURE);
     }
     return (G->vertices);
@@ -98,7 +98,7 @@ int getOrder(Graph G) {
 // returns the size of the graph (edges)
 int getSize(Graph G) {
     if (G==NULL) {
-        printf("List Error: calling getSize() on NULL Graph reference\n");
+        printf("Graph Error: calling getSize() on NULL Graph reference\n");
         exit(EXIT_FAILURE);
     }
     return (G->size);
@@ -111,7 +111,7 @@ int getSize(Graph G) {
 // Pre: 1<=u<=n=getOrder(G)
 int getParent(Graph G, int u) {
     if (G==NULL) {
-        printf("List Error: calling getParent() on NULL Graph reference\n");
+        printf("Graph Error: calling getParent() on NULL Graph reference\n");
         exit(EXIT_FAILURE);
     }
 
@@ -130,14 +130,22 @@ int getParent(Graph G, int u) {
 // returns the discover time of vertex u
 // Pre: 1<=u<=n=getOrder(G)
 int getDiscover(Graph G, int u) {
-
+    if (u < 1 || u > getOrder(G)) {
+        // printf("List Error: calling getDiscover() on out of bounds input\n");
+        exit(EXIT_FAILURE);
+    }
+    return(G->discover[u]);
 }
 
 // getFinish()
 // returns the finish time of vertex u
 // Pre: 1<=u<=n=getOrder(G)
 int getFinish(Graph G, int u) {
-
+    if (u < 1 || u > getOrder(G)) {
+        // printf("List Error: calling getFinish() on out of bounds input\n");
+        exit(EXIT_FAILURE);
+    }
+    return(G->finish[u]);
 }
 
 // Manipulation procedures ----------------------------------------------------
@@ -172,11 +180,11 @@ void makeNull(Graph G) {
 // Pre: 1<=u<=n, 1<=v<=n 
 void addArc(Graph G, int u, int v) {
     if (u < 1 || u > getOrder(G)) {
-        printf("List Error: calling addArc() on out of bounds input u\n");
+        printf("Graph Error: calling addArc() on out of bounds input u\n");
         return;
     }
     if (v < 1 || v > getOrder(G)) {
-        printf("List Error: calling getArc() on out of bounds input v\n");
+        printf("Graph Error: calling getArc() on out of bounds input v\n");
         return;
     } 
 
@@ -226,11 +234,11 @@ void addArc(Graph G, int u, int v) {
 // Pre: 1<=u<=n, 1<=v<=n 
 void addEdge(Graph G, int u, int v) {
     if (u < 1 || u > getOrder(G)) {
-        printf("List Error: calling addEdge() on out of bounds input u\n");
+        printf("Graph Error: calling addEdge() on out of bounds input u\n");
         return;
     }
     if (v < 1 || v > getOrder(G)) {
-        printf("List Error: calling addEdge() on out of bounds input v\n");
+        printf("Graph Error: calling addEdge() on out of bounds input v\n");
         return;
     } 
     addArc(G, u, v);
@@ -261,9 +269,42 @@ void Visit(Graph G, int u, int time) {
 // Pre: (i) length(𝑆) == 𝑛, and (ii) S contains some permutation of the integers {1, 2, … , 𝑛}
 // where 𝑛 = getOrder(𝐺)
 void DFS(Graph G, List S) {
-
+    if (length(S) != getOrder(G)) {
+        printf("Graph Error: calling DPS() when List S is not equal to vertices of Graph G \n");
+        exit(EXIT_FAILURE);
+    }
+    moveFront(S);
+    for (int i = 1; i <= getOrder(G); i++) {
+        int x = get(S);
+        G->color[x] = WHITE;
+        G->parent[x] = NIL;
+        moveNext(S);
+    }
+    int time = 0;
+    moveFront(S);
+    for (int i = 1; i <= getOrder(G); i++) {
+        int x = get(S);
+        if (G->color[x] = WHITE) {
+            Visit(G, x, time);
+        }
+        moveNext(S);
+    }
 }
 // Other operations -----------------------------------------------------------
+
+//transpose()
+// returns a reference to a new graph object 
+// representing the transpose of G
+Graph transpose(Graph G) {
+
+}
+
+//copyGraph()
+// returns a reference to a new graph that 
+// is a copy of G
+Graph copyGraph(Graph G) {
+
+}
 
 //printGraph()
 // prints the adjacency list representation of G 
