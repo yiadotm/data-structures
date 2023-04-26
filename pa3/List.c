@@ -568,10 +568,10 @@ void printList(FILE* out, List L) {
 List copyList(List L) {
    List copy = newList();
    Node N = L->front;
-
+   
    while (N != NULL) {
       append(copy, N->data);
-      N= N->next;
+      N = N->next;
    }
    copy->length = L->length;
    copy->index = -1;

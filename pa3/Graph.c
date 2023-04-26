@@ -16,7 +16,7 @@
 // white = -3
 // grey = -4
 // black -5
-
+int time = 0;
 // structs --------------------------------------------------------------------
 //private GraphObj type
 typedef struct GraphObj {
@@ -49,8 +49,8 @@ Graph newGraph(int n) {
         // printf("initial list length: %d\n", length(G->L[i]));
         G->color[i] = WHITE;
         G->parent[i] = NIL;
-        G->discover[i] = INF;
-        G->finish[i] = INF;
+        G->discover[i] = UNDEF;
+        G->finish[i] = UNDEF;
     }
     
     // printf("[1]: %d\n", length(G->L[1]));
@@ -119,8 +119,7 @@ int getParent(Graph G, int u) {
         // printf("List Error: calling getParent() on out of bounds input\n");
         exit(EXIT_FAILURE);
     }
-
-    if (getSource(G) == NIL) {
+    if (G->parent[u] == NIL) {
         return NIL;
     }
     return(G->parent[u]);
@@ -134,6 +133,7 @@ int getDiscover(Graph G, int u) {
         // printf("List Error: calling getDiscover() on out of bounds input\n");
         exit(EXIT_FAILURE);
     }
+
     return(G->discover[u]);
 }
 
@@ -250,45 +250,90 @@ void addEdge(Graph G, int u, int v) {
 }
 // Visit()
 // visits the vertex and sets the discover/finished time
-void Visit(Graph G, int u, int time) {
+void Visit(Graph G, int u, List A) {
     G->discover[u] = ++time;
-    G->color[u] = WHITE;
-    G->parent[u] = NIL;
+    G->color[u] = GREY;
+    moveFront(G->L[u]);
     for (int i = 0; i < length(G->L[u]); i++) {
         int y = get(G->L[u]);
         if (G->color[y] == WHITE) {
             G->parent[y] = u;
-            Visit(G, y, ++time);
+            Visit(G, y, A);
         }
-        G->color[u] = BLACK;
-        
+        // if (i == length(G->L[u]) - 1) {
+            
+        //     //printf("append\n");
+        //     // printList(stdout, L);
+        //     break;
+        // } 
+        moveNext(G->L[u]);
     }
+    G->color[u] = BLACK;
+    // printf("\ntime: %d\n", time);
+    G->finish[u] = ++time;
+    prepend(A, u);
+
+    
 }
 // DFS()
 // perform the depth first search algorithm on G
 // Pre: (i) length(𝑆) == 𝑛, and (ii) S contains some permutation of the integers {1, 2, … , 𝑛}
 // where 𝑛 = getOrder(𝐺)
 void DFS(Graph G, List S) {
+    List copy = newList();
     if (length(S) != getOrder(G)) {
         printf("Graph Error: calling DPS() when List S is not equal to vertices of Graph G \n");
         exit(EXIT_FAILURE);
     }
-    moveFront(S);
+
     for (int i = 1; i <= getOrder(G); i++) {
-        int x = get(S);
-        G->color[x] = WHITE;
-        G->parent[x] = NIL;
-        moveNext(S);
+        G->color[i] = WHITE;
+        G->parent[i] = 0;
+
     }
-    int time = 0;
+    time = 0;
     moveFront(S);
     for (int i = 1; i <= getOrder(G); i++) {
         int x = get(S);
-        if (G->color[x] = WHITE) {
-            Visit(G, x, time);
+        if (G->color[x] == WHITE) {
+            Visit(G, x, copy);
         }
+        // if (i == length(G->L[x]) - 1) {
+            
+        //     //printf("append\n");
+        //     // printList(stdout, L);
+        //     break;
+        // } 
         moveNext(S);
     }
+
+    // printf("\n");
+    // printList(stdout, copy);
+    // printf("\n");
+    // clear(S);
+    S = copyList(copy);
+    // printList(stdout, S);
+    // printf("\n");
+    // freeList(&copy);
+
+    // clear(S);
+    // moveFront(S);
+    // for (int i = 1; i <= getOrder(G); i++) {
+    //     int x = get(S);
+    //     if (G->finish[i] > G->finish[x]) {
+    //         insertBefore(S, i);
+    //         moveNext(S);
+    //         continue;
+    //     }
+    //     if (i == length(S) - 1) {
+    //         append(S, i);
+    //         //printf("append\n");
+    //         // printList(stdout, L);
+    //         break;
+    //     } 
+    //     moveNext(S); 
+    // }
+    // printList(stdout, S);
 }
 // Other operations -----------------------------------------------------------
 
@@ -296,32 +341,45 @@ void DFS(Graph G, List S) {
 // returns a reference to a new graph object 
 // representing the transpose of G
 Graph transpose(Graph G) {
-    Graph new = newGraph();
+    Graph new = newGraph(getOrder(G));
     for (int i = 1; i <= getOrder(G); i++) {
-        moveFront(G->L);
-        for (int j = 0; j < length(G->L); j ++) {
-            int x = get(G->L);
+        moveFront(G->L[i]);
+        for (int j = 0; j < length(G->L[i]); j++) {
+            int x = get(G->L[i]);
             addArc(G, x, i);
+            moveNext(G->L[i]);
         }
     }
     new->vertices = getOrder(G);
     new->size = getSize(G);
+    return(new);
 }
 
 //copyGraph()
 // returns a reference to a new graph that 
 // is a copy of G
 Graph copyGraph(Graph G) {
-    Graph new = newGraph();
-    new->L = copyList(G->L);
+    Graph new = newGraph(getOrder(G));
+    assert(G!=NULL);
     for (int i = 1; i <= getOrder(G); i++) {
-        new->color[i] = G->color[i];
+        // printList(stdout, G->L[i]);
+        // printf("\n");
+        if (!isEmpty(G->L[i])) {
+            new->L[i] = copyList(G->L[i]);
+        }
+
+        // printList(stdout, G->L[i]);
+        // printf("\n");
+        // printList(stdout, new->L[i]);
+        // printf("\n");
+        // new->color[i] = G->color[i];
         new->parent[i] = getParent(G, i);
         new->discover[i] = getDiscover(G, i);
         new->finish[i] = getFinish(G, i);
     }
     new->vertices = getOrder(G);
     new->size = getSize(G);
+    return(new);
 }
 
 //printGraph()
@@ -336,4 +394,5 @@ void printGraph(FILE* out, Graph G) {
         fprintf(out, "\n");
 
     }
+
 }   

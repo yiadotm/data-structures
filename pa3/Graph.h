@@ -11,7 +11,7 @@
 typedef int GraphElement;
 typedef struct GraphObj* Graph;
 
-#define INF -1
+#define UNDEF -1
 #define NIL -2
 #define WHITE -3
 #define GREY -4
