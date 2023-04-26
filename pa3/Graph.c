@@ -194,6 +194,7 @@ void addArc(Graph G, int u, int v) {
         return;
     } 
 
+
     //printf("size 1: %d\n", length(G->L[u]));
     // if there is nothing to the list
     if (isEmpty(G->L[u])) {
@@ -214,6 +215,9 @@ void addArc(Graph G, int u, int v) {
 
     for (int i = 0; i < length(G->L[u]); i++) {
         //printf("cursor: %d \n", get(G->L[u]));
+        if (v == get(G->L[u])) {
+            return;
+        }
         if (v < get(G->L[u])) {
             //printf("insert\n");
             insertBefore(G->L[u], v);
@@ -296,7 +300,7 @@ void DFS(Graph G, List S) {
 
     for (int i = 1; i <= getOrder(G); i++) {
         G->color[i] = WHITE;
-        G->parent[i] = 0;
+        G->parent[i] = NIL;
 
     }
     time = 0;

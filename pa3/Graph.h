@@ -12,7 +12,7 @@ typedef int GraphElement;
 typedef struct GraphObj* Graph;
 
 #define UNDEF -1
-#define NIL -2
+#define NIL 0
 #define WHITE -3
 #define GREY -4
 #define BLACK -5
