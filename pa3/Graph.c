@@ -63,6 +63,28 @@ Graph newGraph(int n) {
     return (G);
 }
 
+// makeNull()
+// deletes all edges of G, restoring it to its
+// original (no edge) state
+void makeNull(Graph G) {
+    for (int i = 1; i <= G->vertices; i++) {
+        freeList(&(G->L[i]));
+        G->L[i] = NULL;
+    }
+    free(G->L);
+    free(G->color);
+    free(G->parent);
+    free(G->discover);
+    free(G->finish);
+    G->L = NULL;
+    G->color = NULL;
+    G->parent = NULL;
+    G->discover = NULL;
+    G->finish = NULL;
+    G->size = 0;
+
+
+}
 // freeGraph()
 // frees all heap memory associated with the Graph *pG,
 // then sets the handle *pG to NULL
@@ -157,28 +179,6 @@ List getList(Graph G, int u) {
 // Manipulation procedures ----------------------------------------------------
 
 
-// makeNull()
-// deletes all edges of G, restoring it to its
-// original (no edge) state
-void makeNull(Graph G) {
-    for (int i = 1; i <= G->vertices; i++) {
-        freeList(&(G->L[i]));
-        G->L[i] = NULL;
-    }
-    free(G->L);
-    free(G->color);
-    free(G->parent);
-    free(G->discover);
-    free(G->finish);
-    G->L = NULL;
-    G->color = NULL;
-    G->parent = NULL;
-    G->discover = NULL;
-    G->finish = NULL;
-    G->size = 0;
-
-
-}
 
 // addArc()
 // inserts a new directed edge from u to v, 
@@ -290,9 +290,9 @@ void Visit(Graph G, int u, List A) {
 // Pre: (i) length(𝑆) == 𝑛, and (ii) S contains some permutation of the integers {1, 2, … , 𝑛}
 // where 𝑛 = getOrder(𝐺)
 void DFS(Graph G, List S) {
-    List copy = newList();
-    copy = copyList(S);
+    List copy = copyList(S);
     clear(S);
+    assert(isEmpty(S));
     if (length(copy) != getOrder(G)) {
         printf("Graph Error: calling DPS() when List S is not equal to vertices of Graph G \n");
         exit(EXIT_FAILURE);

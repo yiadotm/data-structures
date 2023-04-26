@@ -88,7 +88,10 @@ int main(int argc, char *argv[]) {
       fprintf(outfile, "G contains 0 strongly connected components.\n");
       freeGraph(&G);
       freeGraph(&T);
-      freeGraph(&SCC);
+      for (int i = 1; i < length(S)+1; i++) {
+         freeList(&SCC[i]);
+      }
+      free(SCC);
       freeList(&S);
       fclose(infile);
       fclose(outfile);
