@@ -27,6 +27,7 @@ int getOrder(Graph G); // returns the order of the graph
 int getSize(Graph G);  // returns the size of the graph
 int getParent(Graph G, int u); // will return the parent of vertex u in the DFS tree
 // Pre: 1<=u<=n=getOrder(G)
+List getList(Graph G, int u); // returns the list element at u vertex
 
 int getDiscover(Graph G, int u); // returns the discover time of vertex u
 // Pre: 1<=u<=n=getOrder(G)

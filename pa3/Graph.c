@@ -148,6 +148,12 @@ int getFinish(Graph G, int u) {
     return(G->finish[u]);
 }
 
+//getList()
+// returns the list element at u vertex
+List getList(Graph G, int u) {
+    return (G->L[u]);
+}
+
 // Manipulation procedures ----------------------------------------------------
 
 

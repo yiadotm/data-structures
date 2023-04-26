@@ -59,12 +59,49 @@ int main(int argc, char *argv[]) {
    for(int i=1; i<=n; i++) append(S, i);
    DFS(G, S);
    DFS(T, S);
-   int count = 0;
+   int count = 1;
+   Graph SCC = newGraph(length(S));
+   moveBack(S);
+   while (index(S) != -1) {
+      addArc(SCC, count, get(S));
+      // printf("parent of %d: %d\n", get(S), getParent(T, get(S)));
+      if (getParent(T, get(S)) == 0) {
+         count++;
+      }
+      movePrev(S);
 
-   fprintf(outfile, "G contains %d strongly connected components:\n", count);
-   
+   }
+
+   // }
+   // printGraph(outfile, SCC);
+   // printList(outfile, S);
+   // fprintf(outfile, "\n");
+   if (count == 1) {
+      fprintf(outfile, "G contains 1 strongly connected component:\n");
+   }
+   else if (count == 0) {
+      fprintf(outfile, "G contains 0 strongly connected components.\n");
+      freeGraph(&G);
+      freeGraph(&T);
+      freeGraph(&SCC);
+      freeList(&S);
+      fclose(infile);
+      fclose(outfile);
+      return 0;
+   }
+   else {
+      fprintf(outfile, "G contains %d strongly connected components:\n", count-1);
+   }
+   // fprintf(outfile, "G contains %d strongly connected components:\n", count-1);
+   for (int i = 1; i < count; i++) {
+      fprintf(outfile, "Component %d: ", i);
+      printList(outfile, getList(SCC, i));
+      fprintf(outfile, "\n");
+   }
    freeGraph(&G);
    freeGraph(&T);
+   freeGraph(&SCC);
+   freeList(&S);
    fclose(infile);
    fclose(outfile);
    return 0;
