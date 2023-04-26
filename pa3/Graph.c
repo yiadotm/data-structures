@@ -310,11 +310,14 @@ void DFS(Graph G, List S) {
     // printf("\n");
     // printList(stdout, copy);
     // printf("\n");
-    // clear(S);
+    clear(S);
     S = copyList(copy);
-    // printList(stdout, S);
-    // printf("\n");
-    // freeList(&copy);
+    printf("Copy: ");
+    printList(stdout, copy);
+    printf("\n");
+    printList(stdout, S);
+    printf("\n");
+    freeList(&copy);
 
     // clear(S);
     // moveFront(S);
@@ -373,9 +376,7 @@ Graph copyGraph(Graph G) {
         // printList(stdout, new->L[i]);
         // printf("\n");
         // new->color[i] = G->color[i];
-        new->parent[i] = getParent(G, i);
-        new->discover[i] = getDiscover(G, i);
-        new->finish[i] = getFinish(G, i);
+
     }
     new->vertices = getOrder(G);
     new->size = getSize(G);
