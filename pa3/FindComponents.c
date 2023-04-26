@@ -1,12 +1,11 @@
 /********************************************************************************* 
 * Danee Dang, dudang
-* 2023 Spring CSE101 PA2
-* FindPath.c
+* 2023 Spring CSE101 PA3
+* FindComponents.c
 * The main executable for this program. 
 * It reads multiple pairs of values to "0-0" from a specified 
 * input file and sorts the file from least to greatest for each adj List.
-* It then finds the shortest path from the following pair of values after the "0-0" 
-* and finds the distance from the specified values.
+* It then finds the strongly connected components from the graph using DFS.
 *********************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,9 +1,11 @@
-# Assignment 2 for CSE101 Spring Quarter 2023  
+# Assignment 3 for CSE101 Spring Quarter 2023  
 
 ## This assignment has 8 files:  
-#### FindPath.c  
-> The main executable for this program. It reads multiple pairs of values to "0-0" from a specified input file and sorts the file from least to greatest for each adj List.
-It then finds the shortest path from the following pair of values after the "0-0" and finds the distance from the specified values.
+#### FindComponents.c  
+>  The main executable for this program. 
+> It reads multiple pairs of values to "0-0" from a specified 
+> input file and sorts the file from least to greatest for each adj List.
+> It then finds the strongly connected components from the graph using DFS.
 #### GraphTest.c  
 > File that tests the Graph ADT.  
 #### List.c  
@@ -18,8 +20,8 @@ It then finds the shortest path from the following pair of values after the "0-0
 > This file.  
 #### Makefile  
 
-##### To run FindPath:  
-> make FindPath  
+##### To run FindComponents:  
+> make FindComponents  
 > ./FindPath *input_file* *output_file*  
 
 ##### To run ListTest:  
