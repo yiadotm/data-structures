@@ -314,7 +314,7 @@ void DFS(Graph G, List S) {
         // } 
         moveNext(copy);
     }
-
+    freeList(&copy);
     // printf("\n");
     // printList(stdout, copy);
     // printf("\n");

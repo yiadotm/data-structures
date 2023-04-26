@@ -42,7 +42,7 @@ clean :
 	$(REMOVE) FindComponents GraphClient FindComponents.o GraphClient.o $(BASE_OBJECTS)
 
 checkFind : FindComponents
-	$(MEMCHECK) FindComponents in7 junk7
+	$(MEMCHECK) ./FindComponents in.txt out.txt
 
 checkClient : GraphClient
 	$(MEMCHECK) GraphClient
