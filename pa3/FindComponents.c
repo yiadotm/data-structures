@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
    int count = 0;
 
    fprintf(outfile, "G contains %d strongly connected components:\n", count);
-
+   
    freeGraph(&G);
    freeGraph(&T);
    fclose(infile);

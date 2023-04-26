@@ -281,7 +281,9 @@ void Visit(Graph G, int u, List A) {
 // where 𝑛 = getOrder(𝐺)
 void DFS(Graph G, List S) {
     List copy = newList();
-    if (length(S) != getOrder(G)) {
+    copy = copyList(S);
+    clear(S);
+    if (length(copy) != getOrder(G)) {
         printf("Graph Error: calling DPS() when List S is not equal to vertices of Graph G \n");
         exit(EXIT_FAILURE);
     }
@@ -292,11 +294,11 @@ void DFS(Graph G, List S) {
 
     }
     time = 0;
-    moveFront(S);
+    moveFront(copy);
     for (int i = 1; i <= getOrder(G); i++) {
-        int x = get(S);
+        int x = get(copy);
         if (G->color[x] == WHITE) {
-            Visit(G, x, copy);
+            Visit(G, x, S);
         }
         // if (i == length(G->L[x]) - 1) {
             
@@ -304,20 +306,22 @@ void DFS(Graph G, List S) {
         //     // printList(stdout, L);
         //     break;
         // } 
-        moveNext(S);
+        moveNext(copy);
     }
 
     // printf("\n");
     // printList(stdout, copy);
     // printf("\n");
-    clear(S);
-    S = copyList(copy);
-    printf("Copy: ");
-    printList(stdout, copy);
-    printf("\n");
-    printList(stdout, S);
-    printf("\n");
-    freeList(&copy);
+    // clear(S);
+    // S = copyList(copy);
+    
+    // printf("length: %d\n", length(S));
+    // printf("Copy: ");
+    // printList(stdout, copy);
+    // printf("\n");
+    // printList(stdout, S);
+    // printf("\n");
+    // freeList(&copy);
 
     // clear(S);
     // moveFront(S);
@@ -349,7 +353,7 @@ Graph transpose(Graph G) {
         moveFront(G->L[i]);
         for (int j = 0; j < length(G->L[i]); j++) {
             int x = get(G->L[i]);
-            addArc(G, x, i);
+            addArc(new, x, i);
             moveNext(G->L[i]);
         }
     }
