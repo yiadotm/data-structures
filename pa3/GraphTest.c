@@ -16,7 +16,6 @@ int main(int argc, char* argv[]){
     Graph A = newGraph(15);
     
     List S = newList();
-     A = newGraph(15);
       for(int i=1; i<=15; i++){
       //printf("i: %d \n", i);
       if( i%5!=0 ) addArc(A, i, i+1);
@@ -67,5 +66,7 @@ int main(int argc, char* argv[]){
    
 
    freeGraph(&A);
+   freeGraph(&T);
+   freeList(&S);
    return 0;
 }
