@@ -131,31 +131,42 @@ int NNZ(Matrix M) {
 int equals(Matrix A, Matrix B) {
     assert(A!=NULL);
     assert(B!=NULL);
+
+
     if (size(A) != size(B)) {
         return 0;
     }
+
+    Matrix copyA = copy(A);
+    Matrix copyB = copy(B);
     for (int i = 1; i <= size(A); i++) {
-        moveFront(A->entries[i]);
-        moveFront(B->entries[i]);
-        if (length(A->entries[i]) != length(B->entries[i])) {
+        moveFront(copyA->entries[i]);
+        moveFront(copyB->entries[i]);
+        if (length(copyA->entries[i]) != length(copyB->entries[i])) {
+            freeMatrix(&copyA);
+            freeMatrix(&copyB);
             return 0;
         }
-        for (int j = 0; j < length(A->entries[i]); j++) {
-            if (getEntry(get(A->entries[i])) != getEntry(get(B->entries[i]))) {
+        for (int j = 0; j < length(copyA->entries[i]); j++) {
+            if (getEntry(get(copyA->entries[i])) != getEntry(get(copyB->entries[i]))) {
+                freeMatrix(&copyA);
+                freeMatrix(&copyB);
                 return 0;
             }
-            moveNext(A->entries[i]);
-            moveNext(B->entries[i]);
+            moveNext(copyA->entries[i]);
+            moveNext(copyB->entries[i]);
         }
 
     }
+    freeMatrix(&copyA);
+    freeMatrix(&copyB);
     return 1;
 }
 // Manipulation procedures---------------------------------------------------
 // makeZero()
 // Re-sets M to the zero Matrix state.
 void makeZero(Matrix M) {
-    if (NNZ(M)) {
+    if (NNZ(M) == 0) {
         return;
     }
     for (int i = 1; i <= size(M); i++) {
@@ -310,10 +321,10 @@ Matrix product(Matrix A, Matrix B) {
     Matrix P = newMatrix(size(A));
     for (int i = 1; i <= size(A); i++) {
         //printf("size: %d", size(bT));
-        for (int j = 1; j <= size(bT); j++) {
-            printf("here\n");
+        for (int j = 1; j <= length(bT->entries[i]); j++) {
+            //printf("vectordot: %0.1f\n", vectorDot(A->entries[i], bT->entries[j]));
             append(P->entries[i], newEntry(j, vectorDot(A->entries[i], bT->entries[j])));
-            printf("here2\n");
+            //printf("here2\n");
 
         }
 
