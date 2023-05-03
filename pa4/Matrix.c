@@ -69,15 +69,21 @@ Matrix newMatrix(int n) {
 // Frees heap memory associated with *pM, sets *pM to NULL.
 void freeMatrix(Matrix* pM) {
     if (pM != NULL && *pM != NULL) {
-        // for(int i = 1; i<= (*pM)->size; i++) {
-        //     for (moveFront((*pM)->entries[i]); index((*pM)->entries[i]) != -1; moveNext((*pM)->entries[i])) {
-        //         Entry E = get((*pM)->entries[i]);
-        //         freeEntry(&E);
-        //     }
-        //     freeList(&(*pM)->entries[i]);
-        //     (*pM)->entries = NULL;
-        // }
-        makeZero(*pM);
+        // makeZero(*pM);
+        // printf("Size: %d\n", (*pM)->size);
+        for(int i = 1; i <= (*pM)->size; i++) {
+            // printf("danee sucks %dx more than toes\n", i);
+            for (moveFront((*pM)->entries[i]); index((*pM)->entries[i]) != -1; moveNext((*pM)->entries[i])) {
+                // printf("i = what\n", i);
+                Entry E = get((*pM)->entries[i]);
+                freeEntry(&E);
+            }
+
+            freeList(&((*pM)->entries[i]));
+            (*pM)->entries[i] = NULL;
+        }
+        free(((*pM)->entries));
+        (*pM)->entries = NULL;
         free(*pM);
         *pM = NULL;
     }
@@ -87,23 +93,27 @@ void freeMatrix(Matrix* pM) {
 // size()
 // Return the size of square Matrix M.
 int size(Matrix M) {
+    assert(M!=NULL);
     return (M->size);
 }
 // getEntry()
 // get the entry value at entry E
 double getEntry(Entry E) {
+    assert(E!=NULL);
     return (E->value);
 }
 
 // getCol()
 // get the col at entry E
 int getCol(Entry E) {
+    assert(E!=NULL);
     return (E->col);
 }
 
 // NNZ()
 // Return the number of non-zero elements in M.
 int NNZ(Matrix M) {
+    assert(M!=NULL);
     int count = 0;
     for (int i = 1; i<= M->size; i++) {
         for (moveFront(M->entries[i]); index(M->entries[i]) != -1; moveNext(M->entries[i])) {
@@ -145,19 +155,19 @@ int equals(Matrix A, Matrix B) {
 // makeZero()
 // Re-sets M to the zero Matrix state.
 void makeZero(Matrix M) {
-    for (int i = 1; i <= size(M); i++) {
-        for (moveFront(M->entries[i]); index(M->entries[i]) != -1; moveNext(M->entries[i])) {
-            Entry E = get(M->entries[i]);
-            freeEntry(&E);
-            
-        }
-        freeList(&(M->entries[i]));
-        M->entries = NULL;
+    if (NNZ(M)) {
+        return;
     }
-    free(M->entries);
-    M->entries = NULL;
-    M->size = 0;
-
+    for (int i = 1; i <= size(M); i++) {
+        // for (moveFront(M->entries[i]); index(M->entries[i]) != -1; moveNext(M->entries[i])) {
+        //     // printf("i = what\n", i);
+        //     delete((M->entries[i]));
+        // }
+        int len = length(M->entries[i]);
+        for (int j = 0; j < len; j++) {
+            deleteFront(M->entries[i]);
+        }
+    }
 }
 
 // changeEntry()
@@ -193,9 +203,9 @@ void changeEntry(Matrix M, int i, int j, double x) {
 // // Returns a reference to a new Matrix object having the same entries as A.
 Matrix copy(Matrix A) {
     Matrix C = newMatrix(size(A));
-    for (int i = 1; i < size(A); i++) {
+    for (int i = 1; i <= size(A); i++) {
         for (moveFront(A->entries[i]); index(A->entries[i]) != -1; moveNext(A->entries[i])) {
-            append(C->entries[i], newEntry(getCol(A->entries[i]), getEntry(A->entries[i])));
+            append(C->entries[i], newEntry(getCol(get(A->entries[i])), getEntry(get(A->entries[i]))));
         }
     }
     return C;
@@ -205,9 +215,9 @@ Matrix copy(Matrix A) {
 // of A.
 Matrix transpose(Matrix A) {
     Matrix T = newMatrix(size(A));
-    for (int i = 1; i < size(A); i++) {
+    for (int i = 1; i <= size(A); i++) {
         for (moveFront(A->entries[i]); index(A->entries[i]) != -1; moveNext(A->entries[i])) {
-            append(T->entries[getCol(A->entries[i])], newEntry(i, getEntry(A->entries[i])));
+            append(T->entries[getCol(get(A->entries[i]))], newEntry(i, getEntry(get(A->entries[i]))));
         }
     }   
     return T;
@@ -217,58 +227,13 @@ Matrix transpose(Matrix A) {
 // Returns a reference to a new Matrix object representing xA.
 Matrix scalarMult(double x, Matrix A) {
     Matrix S = newMatrix(size(A));
-    for (int i = 1; i < size(A); i++) {
+    for (int i = 1; i <= size(A); i++) {
         for (moveFront(A->entries[i]); index(A->entries[i]) != -1; moveNext(A->entries[i])) {
-            append(S->entries[i], newEntry(getCol(A->entries[i]), x * getEntry(A->entries[i])));
+            append(S->entries[i], newEntry(getCol(get(A->entries[i])), x * getEntry(get(A->entries[i]))));
         }
     }    
     return S;
 }
-
-// help_sum_diff()
-// Helper function for the sum and diff function
-// If test is 1, then sum, else diff
-
-Matrix help_sum_diff(Matrix A, Matrix B, int test) {
-    assert(size(A) == size(B));
-    Matrix S = newMatrix(A);
-    for (int i = 1; i < size(A); i++) {
-        moveFront(A->entries[i]);
-        moveFront(B->entries[i]);
-
-        for (int j = 0; j < length(A->entries[i]); j++) {
-            Entry E = NULL;
-            if (test) {
-                E = newEntry(getCol(A->entries[i]), getEntry(A->entries[i]) + getEntry(B->entries[i]));
-            }
-            else {
-                E = newEntry(getCol(A->entries[i]), getEntry(A->entries[i]) - getEntry(B->entries[i]));
-            }
-
-            append(S->entries[i], E);
-            freeEntry(&E);
-            moveNext(A->entries[i]);
-            moveNext(B->entries[i]);
-        }
-        
-    }  
-    return S;
-}
-
-// sum()
-// Returns a reference to a new Matrix object representing A+B.
-// pre: size(A)==size(B)
-Matrix sum(Matrix A, Matrix B) {
-  help_sum_diff(A, B, 1);
-}
-
-// diff()
-// Returns a reference to a new Matrix object representing A-B.
-// pre: size(A)==size(B)
-Matrix diff(Matrix A, Matrix B) {
-    help_sum_diff(A, B, 0);
-}
-
 // vectorDot()
 // computes the vector dot product of List P and List Q
 double vectorDot(List P, List Q) {
@@ -282,6 +247,59 @@ double vectorDot(List P, List Q) {
     }
     return v;
 }
+// help_sum_diff()
+// Helper function for the sum and diff function
+// If test is 1, then sum, else diff
+
+Matrix help(Matrix A, Matrix B, int test) {
+    assert(size(A) == size(B));
+    Matrix S = newMatrix(size(A));
+    for (int i = 1; i <= size(A); i++) {
+        moveFront(A->entries[i]);
+        moveFront(B->entries[i]);
+
+        for (int j = 0; index(A->entries[i]) != -1; j++) {
+            // Entry E = NULL;
+           // printf("length: %d, index: %d\n", length(A->entries[i]), index(A->entries[i]));
+            int colA = getCol(get(A->entries[i]));
+           // printf("here2\n");
+            double entryA = getEntry(get(A->entries[i]));
+            //printf("here3\n");
+            double entryB = getEntry(get(B->entries[i]));
+            //printf("here4\n");
+            if (test) {
+                //printf("col: %d, A: %0.1f, B:%0.1f\n", colA, entryA, entryB);
+                append(S->entries[i], newEntry(colA, entryA + entryB));
+
+            }
+            else {
+                append(S->entries[i], newEntry(colA, entryA - entryB));
+            }
+            // append(S->entries[i], E);
+            // freeEntry(&E);
+            moveNext(A->entries[i]);
+            moveNext(B->entries[i]);
+        }
+        
+    }  
+    return S;
+}
+
+// sum()
+// Returns a reference to a new Matrix object representing A+B.
+// pre: size(A)==size(B)
+Matrix sum(Matrix A, Matrix B) {
+  return help(A, B, 1);
+}
+
+// diff()
+// Returns a reference to a new Matrix object representing A-B.
+// pre: size(A)==size(B)
+Matrix diff(Matrix A, Matrix B) {
+    return help(A, B, 0);
+}
+
+
 
 // product()
 // Returns a reference to a new Matrix object representing AB
@@ -289,11 +307,19 @@ double vectorDot(List P, List Q) {
 Matrix product(Matrix A, Matrix B) {
     assert(size(A) == size(B));
     Matrix bT = transpose(B);
-    Matrix P = newMatrix(A);
-    for (int i = 0; i < size(A); i++) {
-        double v = 0;
-        
+    Matrix P = newMatrix(size(A));
+    for (int i = 1; i <= size(A); i++) {
+        //printf("size: %d", size(bT));
+        for (int j = 1; j <= size(bT); j++) {
+            printf("here\n");
+            append(P->entries[i], newEntry(j, vectorDot(A->entries[i], bT->entries[j])));
+            printf("here2\n");
+
+        }
+
     }
+    return P;
+
 
 }
 
@@ -304,14 +330,19 @@ Matrix product(Matrix A, Matrix B) {
 // list of pairs "(col, val)" giving the column numbers and non-zero values
 // in that row. The double val will be rounded to 1 decimal point.
 void printMatrix(FILE* out, Matrix M) {
+
+    if (NNZ(M) == 0) {
+        return;
+    }
     for (int i = 1; i <= size(M); i++) {
         if (isEmpty(M->entries[i])) {
             continue;
         }
+
         fprintf(out, "%d: ", i);
 
         for (moveFront(M->entries[i]); index(M->entries[i]) != -1; moveNext(M->entries[i])) {
-            if (getEntry(get(M->entries[i])) != 0) {
+            if (getEntry(get(M->entries[i])) != 0.0) {
                 fprintf(out, "(%d, %0.1f) ", getCol(get(M->entries[i])), getEntry(get(M->entries[i])));
             }
             

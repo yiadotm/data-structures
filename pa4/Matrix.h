@@ -36,7 +36,6 @@ void makeZero(Matrix M);
 // Changes the ith row, jth column of M to the value x.
 // Pre: 1<=i<=size(M), 1<=j<=size(M)
 void changeEntry(Matrix M, int i, int j, double x);
-
 // Matrix Arithmetic operations---------------------------------------------------
 // copy()
 // Returns a reference to a new Matrix object having the same entries as A.
