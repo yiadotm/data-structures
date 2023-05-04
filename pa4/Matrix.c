@@ -77,6 +77,7 @@ void freeMatrix(Matrix* pM) {
                 // printf("i = what\n", i);
                 Entry E = get((*pM)->entries[i]);
                 freeEntry(&E);
+
             }
 
             freeList(&((*pM)->entries[i]));
@@ -268,28 +269,33 @@ Matrix help(Matrix A, Matrix B, int test) {
     for (int i = 1; i <= size(A); i++) {
         moveFront(A->entries[i]);
         moveFront(B->entries[i]);
+        // printf("lengthA:%d ", length(A->entries[i]));
+        // printf("lengthB:%d\n", length(B->entries[i]));
 
-        for (int j = 0; index(A->entries[i]) != -1; j++) {
-            // Entry E = NULL;
-           // printf("length: %d, index: %d\n", length(A->entries[i]), index(A->entries[i]));
-            int colA = getCol(get(A->entries[i]));
-           // printf("here2\n");
-            double entryA = getEntry(get(A->entries[i]));
-            //printf("here3\n");
-            double entryB = getEntry(get(B->entries[i]));
-            //printf("here4\n");
-            if (test) {
-                //printf("col: %d, A: %0.1f, B:%0.1f\n", colA, entryA, entryB);
-                append(S->entries[i], newEntry(colA, entryA + entryB));
+        for (int j = 0; j < length(B->entries[i]); j++) {
+            if (index(A->entries[i]) != -1 && index(B->entries[i]) != -1) {
+                // Entry E = NULL;
+            // printf("length: %d, index: %d\n", length(A->entries[i]), index(A->entries[i]));
+                int colA = getCol(get(A->entries[i]));
+            //  printf("here2\n");
+                double entryA = getEntry(get(A->entries[i]));
+                //printf("here3\n");
+                double entryB = getEntry(get(B->entries[i]));
+                //printf("here4\n");
+                if (test) {
+                    printf("col: %d, A: %0.1f, B:%0.1f\n", colA, entryA, entryB);
+                    append(S->entries[i], newEntry(colA, entryA + entryB));
+                    
+                }
+                else {
+                    append(S->entries[i], newEntry(colA, entryA - entryB));
+                }
+                // append(S->entries[i], E);
+                // freeEntry(&E);
+                moveNext(A->entries[i]);
+                moveNext(B->entries[i]);
+            }
 
-            }
-            else {
-                append(S->entries[i], newEntry(colA, entryA - entryB));
-            }
-            // append(S->entries[i], E);
-            // freeEntry(&E);
-            moveNext(A->entries[i]);
-            moveNext(B->entries[i]);
         }
         
     }  
