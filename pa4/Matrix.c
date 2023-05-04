@@ -259,6 +259,14 @@ double vectorDot(List P, List Q) {
     }
     return v;
 }
+
+// maxlen()
+// returns the greater length of 2 lists
+int maxlen(List P, List Q) {
+    if (length(P) > length(Q)) return length(P);
+    return length(Q);
+}
+
 // help_sum_diff()
 // Helper function for the sum and diff function
 // If test is 1, then sum, else diff
@@ -266,39 +274,132 @@ double vectorDot(List P, List Q) {
 Matrix help(Matrix A, Matrix B, int test) {
     assert(size(A) == size(B));
     Matrix S = newMatrix(size(A));
-    for (int i = 1; i <= size(A); i++) {
-        moveFront(A->entries[i]);
-        moveFront(B->entries[i]);
-        // printf("lengthA:%d ", length(A->entries[i]));
-        // printf("lengthB:%d\n", length(B->entries[i]));
+    // for (int i = 1; i <= size(A); i++) {
+    //     moveFront(A->entries[i]);
+    //     moveFront(B->entries[i]);
+    //     // printf("lengthA:%d ", length(A->entries[i]));
+    //     // printf("lengthB:%d\n", length(B->entries[i]));
+    //     // int max = maxlen(A->entries[i], B->entries[i]);
+    //     int colA = getCol(get(A->entries[i]));
+    //     int colB = getCol(get(B->entries[i]));
+    //     double entryA = getEntry(get(A->entries[i]));
+    //     //printf("here3\n");
+    //     double entryB = getEntry(get(B->entries[i]));
 
-        for (int j = 0; j < length(B->entries[i]); j++) {
-            if (index(A->entries[i]) != -1 && index(B->entries[i]) != -1) {
-                // Entry E = NULL;
-            // printf("length: %d, index: %d\n", length(A->entries[i]), index(A->entries[i]));
-                int colA = getCol(get(A->entries[i]));
-            //  printf("here2\n");
-                double entryA = getEntry(get(A->entries[i]));
-                //printf("here3\n");
-                double entryB = getEntry(get(B->entries[i]));
-                //printf("here4\n");
-                if (test) {
-                    printf("col: %d, A: %0.1f, B:%0.1f\n", colA, entryA, entryB);
-                    append(S->entries[i], newEntry(colA, entryA + entryB));
+    //     while (index(A->entries[i]) != -1 && index(B->entries[i]) != -1) {
+    //         // Entry E = NULL;
+    //         // printf("length: %d, index: %d\n", length(A->entries[i]), index(A->entries[i]));
+    //         //  printf("here2\n");
+    //         //printf("here4\n");
+    //         if (colA == colB) {
+    //             if (test) {
+    //                 printf("colA: %d, colB: %d, A: %0.1f, B:%0.1f\n", colA, colB, entryA, entryB);
+    //                 append(S->entries[i], newEntry(colA, entryA + entryB));
                     
-                }
-                else {
-                    append(S->entries[i], newEntry(colA, entryA - entryB));
-                }
-                // append(S->entries[i], E);
-                // freeEntry(&E);
-                moveNext(A->entries[i]);
-                moveNext(B->entries[i]);
-            }
+    //             }
+    //             else {
+    //                 append(S->entries[i], newEntry(colA, entryA - entryB));
+    //             }
+    //             moveNext(A->entries[i]);
+    //             moveNext(B->entries[i]);
+    //             colA = getCol(get(A->entries[i]));
+    //             colB = getCol(get(B->entries[i]));
+    //             entryA = getEntry(get(A->entries[i]));
+    //             //printf("here3\n");
+    //             entryB = getEntry(get(B->entries[i]));
+    //             continue;
+    //         }
+    //         else if (colA < colB) {
+    //                 printf("colA: %d, colB: %d, A: %0.1f, B:%0.1f\n", colA, colB, entryA, entryB);
+    //                 append(S->entries[i], newEntry(colA, entryA));
+    //                 moveNext(A->entries[i]);
+    //                 colA = getCol(get(A->entries[i]));
+    //                 entryA = getEntry(get(A->entries[i]));
+    //                 continue;
+                    
+                
+                
+    //         }
+    //         else {
+    //             if (test) {
+    //                 printf("colA: %d, colB: %d, A: %0.1f, B:%0.1f\n", colA, colB, entryA, entryB);
+    //                 append(S->entries[i], newEntry(colB, entryB));
+    //                 moveNext(B->entries[i]);
+    //                 colB = getCol(get(B->entries[i]));
+    //                 entryB = getEntry(get(B->entries[i]));
+    //                 continue;
+                    
+    //             }
+    //             else {
+    //                 append(S->entries[i], newEntry(colB, -1.0 * entryB));
+    //                 moveNext(B->entries[i]);
+    //                 colB = getCol(get(B->entries[i]));
+    //                 entryB = getEntry(get(B->entries[i]));
+    //                 continue;
+    //             }                     
+    //         }
 
+    //             // append(S->entries[i], E);
+    //             // freeEntry(&E);
+
+            
+
+    //     }
+        
+    // }  
+
+    for (int i = 1; i <= size(A); i++) {
+        List rowA = A->entries[i];
+        List rowB = B->entries[i];
+        List out = S->entries[i];
+        moveFront(rowA);
+        moveFront(rowB);
+        moveFront(out);
+        if ((length(rowA) == 0)) {
+            while (index(rowB) >= 0) {
+                Entry B = newEntry(getCol(get(rowB)), getEntry(get(rowB)));
+                append(out, B);
+                moveNext(rowA);
+            }
+        }
+        if (length(rowB) == 0) {
+            while (index(rowA) >= 0) {
+                Entry A = newEntry(getCol(get(rowA)), getEntry(get(rowA)));
+                append(out, A);
+                moveNext(rowA);
+            }
         }
         
-    }  
+        while (index(rowA) >= 0 && index(rowB) >= 0) {
+            Entry entryA = get(rowA);
+            Entry entryB = get(rowB);
+            if (getCol(entryA) > getCol(entryB)) {
+                append(out, newEntry(getCol(entryB), getEntry(entryB)));
+                moveNext(rowB);
+            }
+            else if (getCol(entryA) < getCol(entryB)) {
+                append(out, newEntry(getCol(entryA), getEntry(entryA)));
+                moveNext(rowA);
+            }
+
+            if (getCol(entryA) == getCol(entryB)) {
+                if (test) {append(out, newEntry(getCol(entryA), getEntry(entryA) + getEntry(entryB))); }
+                else { append(out, newEntry(getCol(entryA), getEntry(entryA) - getEntry(entryB))); }
+                
+                moveNext(rowA);
+                moveNext(rowB);
+            }
+
+
+        }
+        if (index(rowA) >= 0) {
+            append(out,  newEntry(getCol(get(rowA)), getEntry(get(rowA))));
+        }
+        if (index(rowB) >= 0) {
+            append(out,  newEntry(getCol(get(rowB)), getEntry(get(rowB))));
+        }
+
+    }
     return S;
 }
 
