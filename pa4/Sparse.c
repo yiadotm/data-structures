@@ -43,8 +43,7 @@ int main(int argc, char *argv[]) {
    fscanf(infile, "%d %d %d", &n, &a, &b);
    Matrix A = newMatrix(n);
    Matrix B = newMatrix(n);
-   Matrix sA, ApB, ApA;
-   //BsA, AsA, T, AmB, BmB;
+   Matrix sA, ApB, ApA, BsA, AsA, T, AmB, BmB;
    for (int i = 0; i < a; i++) {
     int r, c;
     double v;
@@ -85,32 +84,32 @@ int main(int argc, char *argv[]) {
    printMatrix(outfile, ApA);
    fprintf(outfile, "\n");
 
-   // fprintf(outfile, "B-A = \n");
-   // BsA = diff(B, A); 
-   // printMatrix(outfile, BsA);
-   // fprintf(outfile, "\n");
+   fprintf(outfile, "B-A = \n");
+   BsA = diff(B, A); 
+   printMatrix(outfile, BsA);
+   fprintf(outfile, "\n");
 
    // printf("here\n");
 
-   // fprintf(outfile, "A-A = \n");
-   // AsA = diff(A, A); 
-   // printMatrix(outfile, AsA);
-   // fprintf(outfile, "\n");
+   fprintf(outfile, "A-A = \n");
+   AsA = diff(A, A); 
+   printMatrix(outfile, AsA);
+   fprintf(outfile, "\n");
 
-   // fprintf(outfile, "Transpose(A) = \n");
-   // T = transpose(A); 
-   // printMatrix(outfile, T);
-   // fprintf(outfile, "\n");
+   fprintf(outfile, "Transpose(A) = \n");
+   T = transpose(A); 
+   printMatrix(outfile, T);
+   fprintf(outfile, "\n");
 
-   // fprintf(outfile, "A*B = \n");
-   // AmB = product(A, B); 
-   // printMatrix(outfile, AmB);
-   // fprintf(outfile, "\n");
+   fprintf(outfile, "A*B = \n");
+   AmB = product(A, B); 
+   printMatrix(outfile, AmB);
+   fprintf(outfile, "\n");
 
-   // fprintf(outfile, "B*B = \n");
-   // BmB = product(B, B); 
-   // printMatrix(outfile, BmB);
-   // fprintf(outfile, "\n");  
+   fprintf(outfile, "B*B = \n");
+   BmB = product(B, B); 
+   printMatrix(outfile, BmB);
+   fprintf(outfile, "\n");  
 
 
 //    Matrix ApB, ApA, BsA, AsA, T, AmB, BmB;
@@ -120,11 +119,11 @@ int main(int argc, char *argv[]) {
    freeMatrix(&sA);
    freeMatrix(&ApB);
    freeMatrix(&ApA);
-   // freeMatrix(&BsA);
-   // freeMatrix(&AsA);
-   // freeMatrix(&T);
-   // freeMatrix(&AmB);
-   // freeMatrix(&BmB);
+   freeMatrix(&BsA);
+   freeMatrix(&AsA);
+   freeMatrix(&T);
+   freeMatrix(&AmB);
+   freeMatrix(&BmB);
 
    return 0;
 }
