@@ -364,8 +364,9 @@ void add_or_sub(List A, List B, List S, int test) {
 
             }
             else {
-                append(S, newEntry(getCol(get(A)), -1 * getEntry(get(A))));
-                moveNext(A);
+                append(S, newEntry(getCol(get(B)), -1 * getEntry(get(B))));
+                // printf("entry: %d, %0.1f\n", getCol(get(B)), -1 * getEntry(get(B)));
+                moveNext(B);
                 // printf("4 indexA: %d, indexB: %d\n", index(A), index(B));
             }
            
@@ -400,6 +401,7 @@ void add_or_sub(List A, List B, List S, int test) {
             else {
                 append(S, newEntry(getCol(get(B)), -1 * getEntry(get(B))));
                 moveNext(B);
+                
             }
         }
         

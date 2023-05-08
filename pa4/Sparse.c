@@ -44,6 +44,7 @@ int main(int argc, char *argv[]) {
    Matrix A = newMatrix(n);
    Matrix B = newMatrix(n);
    Matrix sA, ApB, ApA, BsA, AsA, T, AmB, BmB;
+
    for (int i = 0; i < a; i++) {
     int r, c;
     double v;
