@@ -4,7 +4,7 @@
 * Sparse.c
 * The main executable for this program. 
 * It reads in an input file that contains the data for 2 matrices and 
-* runs several arithmetic operations and outputs in a txt file
+* runs several arithmetic operations and outputs in a txt file.
 *********************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
