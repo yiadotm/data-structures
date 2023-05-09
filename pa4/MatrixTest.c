@@ -7,123 +7,92 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<stdbool.h>
+#include <assert.h>
 #include"Matrix.h"
      
 int main(){
-   Matrix A = newMatrix(10);
-   Matrix B = newMatrix(10);
-   changeEntry(A, 1, 1, 1);
-   changeEntry(A, 2, 2, 1);
-   changeEntry(A, 3, 3, 1);
-   Matrix C = product(A, A);
-   if (NNZ(C) != 3)
-   return 1;
-   changeEntry(A, 1, 1, 1);
-   changeEntry(A, 1, 2, 2);
-   changeEntry(A, 1, 3, 3);
-   changeEntry(A, 2, 1, 4);
-   changeEntry(A, 2, 2, 5);
-   changeEntry(A, 2, 3, 6);
-   changeEntry(A, 3, 1, 7);
-   changeEntry(A, 3, 2, 8);
-   changeEntry(A, 3, 3, 9);
-   changeEntry(B, 1, 1, 1);
-   changeEntry(B, 2, 2, 1);
-   printf("\n");
-   printf("A: \n");
+
+   int n=100;
+   Matrix A = newMatrix(n);
+   Matrix B = newMatrix(n);
+   Matrix C;
+   Matrix D;
+   Matrix E;
+   Matrix F;
+   Matrix G;
+   Matrix H;
+
+    //printf("hi3\n");
+   changeEntry(A, 1,1,2); changeEntry(B, 1,1,2);
+   //printf("hi1\n");
+   changeEntry(A, 1,2,3); changeEntry(B, 1,2,1);
+   changeEntry(A, 1,3,5); changeEntry(B, 1,3,3);
+   changeEntry(A, 2,1,7); changeEntry(B, 2,1,1);
+   changeEntry(A, 2,2,5); changeEntry(B, 2,2,4);
+   changeEntry(A, 2,3,2); changeEntry(B, 2,3,2);
+   changeEntry(A, 3,1,9); changeEntry(B, 3,1,3);
+   changeEntry(A, 3,2,8); changeEntry(B, 3,2,7);
+   changeEntry(A, 3,3,5); changeEntry(B, 3,3,8);
+    //printf("hi3\n");
+   printf("A has %d elements:\n", NNZ(A));
    printMatrix(stdout, A);
    printf("\n");
 
-   printf("bT: \n");
-   Matrix bT = transpose(B);
-   printMatrix(stdout, bT);
+   printf("B has %d elements:\n", NNZ(B));
+   printMatrix(stdout, B);
    printf("\n");
-   Matrix D = product(A, B);
-   printf("D:\n");
+
+   C = scalarMult(1.5, A);
+   printf("1.5 * A has %d elements:\n", NNZ(C));
+   printMatrix(stdout, C);
+   printf("\n");
+
+   D = sum(A, B);
+   printf("A+B has %d elements:\n", NNZ(D));
    printMatrix(stdout, D);
-   printf("NNZ: %d\n", NNZ(D));
-   if (NNZ(D) != 6)
-   return 2;
-   return 0;
-   // int n=100;
-   // Matrix A = newMatrix(n);
-   // Matrix B = newMatrix(n);
-   // Matrix C;
-   // Matrix D;
-   // Matrix E;
-   // Matrix F;
-   // Matrix G;
-   // Matrix H;
-
-   //  //printf("hi3\n");
-   // changeEntry(A, 1,1,1); changeEntry(B, 1,1,1);
-   // //printf("hi1\n");
-   // changeEntry(A, 1,2,2); changeEntry(B, 1,2,0);
-   // changeEntry(A, 1,3,3); changeEntry(B, 1,3,1);
-   // changeEntry(A, 2,1,4); changeEntry(B, 2,1,0);
-   // changeEntry(A, 2,2,5); changeEntry(B, 2,2,1);
-   // changeEntry(A, 2,3,6); changeEntry(B, 2,3,0);
-   // changeEntry(A, 3,1,7); changeEntry(B, 3,1,1);
-   // changeEntry(A, 3,2,8); changeEntry(B, 3,2,1);
-   // changeEntry(A, 3,3,9); changeEntry(B, 3,3,1);
-   //  //printf("hi3\n");
-   // printf("%d\n", NNZ(A));
-   // printMatrix(stdout, A);
-   // printf("\n");
-
-   // printf("%d\n", NNZ(B));
-   // printMatrix(stdout, B);
-   // printf("\n");
-
-   // C = scalarMult(1.5, A);
-   // printf("%d\n", NNZ(C));
-   // printMatrix(stdout, C);
-   // printf("\n");
-
-   // D = sum(A, B);
-   // printf("%d\n", NNZ(D));
-   // printMatrix(stdout, D);
-   // printf("\n");
+   printf("\n");
 
 
-   // E = diff(A, A);
-   // printf("%d\n", NNZ(E));
-   // printMatrix(stdout, E);
-   // printf("\n");
+   E = diff(A, B);
+   printf("A-B has %d elements:\n", NNZ(E));
+   printMatrix(stdout, E);
+   printf("\n");
 
-   // F = transpose(B);
-   // printf("%d\n", NNZ(F));
-   // printMatrix(stdout, F);
-   // printf("\n");
+   F = transpose(A);
+   printf("Transpose of A has %d elements:\n", NNZ(F));
+   printMatrix(stdout, F);
+   printf("\n");
 
-   // G = product(B, B);
-   // printf("%d\n", NNZ(G));
-   // printMatrix(stdout, G);
-   // printf("\n");
+   G = product(A, B);
+   printf("A*B has %d elements:\n", NNZ(G));
+   printMatrix(stdout, G);
+   printf("\n");
 
-   // H = copy(A);
-   // printf("%d\n", NNZ(H));
-   // printMatrix(stdout, H);
-   // printf("\n");
+   H = copy(A);
+   printf("copy of A has %d elements:\n", NNZ(H));
+   printMatrix(stdout, H);
+   printf("\n");
 
    // printf("%s\n", equals(A, H)?"true":"false" );
+   assert(equals(A, H) == true);
    // printf("%s\n", equals(A, B)?"true":"false" );
+   assert(equals(A,B) == false);
    // printf("%s\n", equals(A, A)?"true":"false" );
+   assert(equals(A,A) == true);
 
-   // makeZero(A);
-   // printf("%d\n", NNZ(A));
-   // printMatrix(stdout, A);
+   makeZero(A);
+   printf("After setting A to zero state, A has %d elements\n", NNZ(A));
+   printMatrix(stdout, A);
 
-   // freeMatrix(&A);
-   // freeMatrix(&B);
-   // freeMatrix(&C);
-   // freeMatrix(&D);
-   // freeMatrix(&E);
-   // freeMatrix(&F);
-   // freeMatrix(&G);
-   // freeMatrix(&H);
+   freeMatrix(&A);
+   freeMatrix(&B);
+   freeMatrix(&C);
+   freeMatrix(&D);
+   freeMatrix(&E);
+   freeMatrix(&F);
+   freeMatrix(&G);
+   freeMatrix(&H);
 
 
-   // // return EXIT_SUCCESS;
-   // return 0;
+   return 0;
 }
