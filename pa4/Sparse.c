@@ -126,5 +126,8 @@ int main(int argc, char *argv[]) {
    freeMatrix(&AmB);
    freeMatrix(&BmB);
 
+   fclose(infile);
+   fclose(outfile);
+
    return 0;
 }
