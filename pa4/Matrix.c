@@ -174,7 +174,7 @@ void makeZero(Matrix M) {
         // }
 
         for (moveFront(M->entries[i]); index(M->entries[i]) != -1; moveNext(M->entries[i])) {
-            Entry E = get(M->entries[i]);
+            Entry E = (Entry) get(M->entries[i]);
             freeEntry(&E);
         }
         clear(M->entries[i]);
@@ -212,14 +212,14 @@ void changeEntry(Matrix M, int i, int j, double x) {
         if (getCol(get(M->entries[i])) == j) {
             if (x == 0)  {
                 // printf("(%d, %d, %0.1f)\n", i, j, x);
-                Entry E = get(M->entries[i]);
+                Entry E = (Entry) get(M->entries[i]);
                 freeEntry(&E);
                 delete(M->entries[i]);
                 M->NNZ--;
                 return;
             }
             // printf("set:: i: %d, j: %d, x: %0.1f, length: %d\n", i, j, x, length(M->entries[i]));
-            Entry E = get(M->entries[i]);
+            Entry E = (Entry) get(M->entries[i]);
             freeEntry(&E);
             set(M->entries[i], newEntry(j, x));
             return;
@@ -477,7 +477,6 @@ Matrix product(Matrix A, Matrix B) {
     assert(size(A) == size(B));
     Matrix bT = transpose(B);
     Matrix P = newMatrix(size(A));
-    printf("size: %d\n", NNZ(A));
     for (int i = 1; i <= size(A); i++) {
         // if (isEmpty(bT->entries[i]) || isEmpty(A->entries[i])) {
         //     continue;
