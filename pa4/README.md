@@ -23,7 +23,7 @@
 
 ##### To run Sparse:  
 > make Sparse  
-> ./FindPath *input_file* *output_file*  
+> ./Sparse *input_file* *output_file*  
 
 ##### To run ListTest:  
 > make ListTest  
