@@ -12,7 +12,7 @@
      
 int main(){
 
-   int n=100;
+   int n=10;
    Matrix A = newMatrix(n);
    Matrix B = newMatrix(n);
    Matrix C;
