@@ -325,6 +325,7 @@ double vectorDot(List P, List Q) {
 // add_or_sub()
 // Helper function for the sum and diff function
 // If test is 1, then sum, else diff
+// Referenced from pseudo code by smiles#8734 in discord server
 void add_or_sub(List A, List B, List S, int test) {
     moveFront(A);
     moveFront(B);
