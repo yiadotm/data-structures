@@ -174,7 +174,7 @@ void makeZero(Matrix M) {
         // }
 
         for (moveFront(M->entries[i]); index(M->entries[i]) != -1; moveNext(M->entries[i])) {
-            Entry E = get(M->entries[i]);
+            Entry E = (Entry) get(M->entries[i]);
             freeEntry(&E);
         }
         clear(M->entries[i]);
@@ -195,7 +195,11 @@ void changeEntry(Matrix M, int i, int j, double x) {
     // overwrite or append
     if (isEmpty(M->entries[i])) {
         if (x != 0.0) {
+            // printf("empty:: i: %d, j: %d, x: %0.1f\n", i, j, x);
+            // printf("length: %d\n", length(M->entries[i]));
             append(M->entries[i], newEntry(j, x));
+            // printf("length: %d\n", length(M->entries[i]));
+
             M->NNZ++;
             // printf("i: %d, j: %d, x: %0.1f\n", i, j, x);
             // printf("NNZ: %d\n", NNZ(M));
@@ -205,10 +209,25 @@ void changeEntry(Matrix M, int i, int j, double x) {
     }
     for (moveFront(M->entries[i]); index(M->entries[i]) != -1; moveNext(M->entries[i])) {
         //printf("length: %d, i: %d, index: %d\n", length(M->entries[i]), i, index(M->entries[i]));
-
+        if (getCol(get(M->entries[i])) == j) {
+            if (x == 0)  {
+                // printf("(%d, %d, %0.1f)\n", i, j, x);
+                Entry E = (Entry) get(M->entries[i]);
+                freeEntry(&E);
+                delete(M->entries[i]);
+                M->NNZ--;
+                return;
+            }
+            // printf("set:: i: %d, j: %d, x: %0.1f, length: %d\n", i, j, x, length(M->entries[i]));
+            Entry E = (Entry) get(M->entries[i]);
+            freeEntry(&E);
+            set(M->entries[i], newEntry(j, x));
+            return;
+        }
+        // printf("col: %d, (%d, %0.1f) \n", getCol(get(M->entries[i])), j, x);
         if(j < getCol(get(M->entries[i]))) {
             if (x != 0.0) {
-                prepend(M->entries[i], newEntry(j, x));
+                insertBefore(M->entries[i], newEntry(j, x));
                 M->NNZ++;
                 // printf("i: %d, j: %d, x: %0.1f\n", i, j, x);
                 // printf("NNZ: %d\n", NNZ(M));
@@ -216,22 +235,16 @@ void changeEntry(Matrix M, int i, int j, double x) {
             }
 
         }
-        if (getCol(get(M->entries[i])) == j) {
-            if (x == 0)  {
-                delete(M->entries[i]);
-                M->NNZ--;
+        if (j > getCol(back(M->entries[i]))) {
+            if (x != 0.0) {
+                append(M->entries[i], newEntry(j, x));
+                M->NNZ++;
+                // printf("i: %d, j: %d, x: %0.1f\n", i, j, x);
+                // printf("NNZ: %d\n", NNZ(M));
                 return;
             }
-            set(M->entries[i], newEntry(j, x));
-            return;
         }
-        if (x != 0.0) {
-            append(M->entries[i], newEntry(j, x));
-            M->NNZ++;
-            // printf("i: %d, j: %d, x: %0.1f\n", i, j, x);
-            // printf("NNZ: %d\n", NNZ(M));
-            return;
-        }
+
 
         
     }
@@ -258,10 +271,13 @@ Matrix transpose(Matrix A) {
     Matrix T = newMatrix(size(A));
     for (int i = 1; i <= size(A); i++) {
         for (moveFront(A->entries[i]); index(A->entries[i]) != -1; moveNext(A->entries[i])) {
+            // printf("(%d, %d, %0.1f)\n", getCol(get(A->entries[i])), i, getEntry(get(A->entries[i])));
             changeEntry(T, getCol(get(A->entries[i])), i, getEntry(get(A->entries[i])));
+
+            
             
         }
-    }   
+    }
     return T;
 }
 
@@ -325,82 +341,85 @@ double vectorDot(List P, List Q) {
 // add_or_sub()
 // Helper function for the sum and diff function
 // If test is 1, then sum, else diff
-// Referenced from pseudo code by smiles#8734 in discord server
-void add_or_sub(List A, List B, List S, int test) {
+void add_or_sub(List A, List B, Matrix S, int i, int test) {
     moveFront(A);
     moveFront(B);
     if ((isEmpty(A))) {
         while (index(B) >= 0) {
             if (test) {
-                append(S, newEntry(getCol(get(B)), getEntry(get(B))));
+                changeEntry(S, i, getCol(get(B)), getEntry(get(B)));
                 moveNext(B);
             }
             else {
-            append(S, newEntry(getCol(get(B)), -1 * getEntry(get(B))));
+            changeEntry(S, i, getCol(get(B)), -1 * getEntry(get(B)));
             moveNext(B);                
             }
         }
     }
     if (isEmpty(B)) {
         while (index(A) >= 0) {
-            append(S, newEntry(getCol(get(A)), getEntry(get(A))));
+            changeEntry(S, i, getCol(get(A)), getEntry(get(A)));
             moveNext(A);
 
         }
     }
         
     while (index(A) >= 0 && index(B) >= 0) {
+        if (getCol(get(B)) == getCol(get(A))) {
+            if (test) {
+            changeEntry(S, i, getCol(get(A)), getEntry(get(A)) + getEntry(get(B)));
+            }
+            else {
+            changeEntry(S, i, getCol(get(A)), getEntry(get(A)) - getEntry(get(B)));
+
+            }
+            moveNext(A);      
+            moveNext(B);      
+        }
+
+        if (index(A) == -1 || index(B) == -1) {
+            break;
+        }
         // printf("1 indexA: %d, indexB: %d\n", index(A), index(B));
         if (getCol(get(A)) < getCol(get(B))) {
-            append(S, newEntry(getCol(get(A)), getEntry(get(A))));
+            changeEntry(S, i, getCol(get(A)), getEntry(get(A)));
             moveNext(A);
             // printf("3 indexA: %d, indexB: %d\n", index(A), index(B));
 
         }
         else if (getCol(get(B)) < getCol(get(A))) {
             if (test) {
-                append(S, newEntry(getCol(get(B)), getEntry(get(B))));
+                changeEntry(S, i, getCol(get(B)), getEntry(get(B)));
                 moveNext(B); 
                 // printf("4 indexA: %d, indexB: %d\n", index(A), index(B));
 
             }
             else {
-                append(S, newEntry(getCol(get(A)), -1 * getEntry(get(A))));
-                moveNext(A);
+                changeEntry(S, i, getCol(get(B)), -1 * getEntry(get(B)));
+                // printf("entry: %d, %0.1f\n", getCol(get(B)), -1 * getEntry(get(B)));
+                moveNext(B);
                 // printf("4 indexA: %d, indexB: %d\n", index(A), index(B));
             }
            
         }
         // printf("5 indexA: %d, indexB: %d\n", index(A), index(B));
 
-        if (index(A) == -1 || index(B) == -1) {
-            break;
-        }
         // printf("2 indexA: %d, indexB: %d\n", index(A), index(B));
 
-        if (getCol(get(B)) == getCol(get(A))) {
-            if (test) {
-            append(S, newEntry(getCol(get(A)), getEntry(get(A)) + getEntry(get(B))));
-            }
-            else {
-            append(S, newEntry(getCol(get(A)), getEntry(get(A)) - getEntry(get(B))));
 
-            }
-            moveNext(A);      
-            moveNext(B);      
-        }
     }
     // printf("6 indexA: %d, indexB: %d\n", index(A), index(B));
 
     if (index(B) >= 0) {
         while (index(B) >= 0) {
            if (test) {
-                append(S, newEntry(getCol(get(B)), getEntry(get(B))));
+                changeEntry(S, i, getCol(get(B)), getEntry(get(B)));
                 moveNext(B); 
             }
             else {
-                append(S, newEntry(getCol(get(B)), -1 * getEntry(get(B))));
+                changeEntry(S, i, getCol(get(B)), -1 *getEntry(get(B)));
                 moveNext(B);
+                
             }
         }
         
@@ -409,7 +428,7 @@ void add_or_sub(List A, List B, List S, int test) {
 
     if (index(A) >= 0) {
         while (index(A) >= 0) {
-            append(S,  newEntry(getCol(get(A)), getEntry(get(A))));
+            changeEntry(S, i, getCol(get(A)), getEntry(get(A)));
             moveNext(A);
         }        
     }
@@ -426,8 +445,9 @@ Matrix sum(Matrix A, Matrix B) {
     }
     Matrix S = newMatrix(size(A));
     for (int i = 1; i <= size(A); i++) {
-        add_or_sub(A->entries[i], B->entries[i], S->entries[i], 1);
-        S->NNZ+= length(S->entries[i]);
+        add_or_sub(A->entries[i], B->entries[i], S, i, 1);
+        // printf("length[%d]: %d\n", i, length(S->entries[i]));
+        
     }
     return S;
 }
@@ -442,8 +462,8 @@ Matrix diff(Matrix A, Matrix B) {
         return D;
     }
     for (int i = 1; i <= size(A); i++) {
-        add_or_sub(A->entries[i], B->entries[i], D->entries[i], 0);
-        D->NNZ+= length(D->entries[i]);
+        add_or_sub(A->entries[i], B->entries[i], D, i, 0);
+        
     }
     return D;    
 }
@@ -457,15 +477,21 @@ Matrix product(Matrix A, Matrix B) {
     assert(size(A) == size(B));
     Matrix bT = transpose(B);
     Matrix P = newMatrix(size(A));
-    
     for (int i = 1; i <= size(A); i++) {
-        if (isEmpty(A->entries[i])) {
-            continue;
-        }
-        for (int j = 1; j <= getCol(back(bT->entries[i])); j++) {
-            // printf("i: %d, j: %d  ", i, j);
+        // if (isEmpty(bT->entries[i]) || isEmpty(A->entries[i])) {
+        //     continue;
+        // }
+        // printf("length: %d\n", length(bT->entries[i]));
+        // printf("col: %d\n",  getCol(back(bT->entries[i])));
+        for (int j = 1; j <= size(bT); j++) {
+            // printf("product:: i: %d, j: %d  \n", i, j);
             // printf("v: %0.1f\n", vectorDot(A->entries[i], bT->entries[j]));
+            // printf("\n");
+            // printMatrix(stdout, P);
+            // printf("\n");
+
             changeEntry(P, i, j, vectorDot(A->entries[i], bT->entries[j]));
+            // printf("i: %d, j: %d  \n", i, j);
         }
 
     }

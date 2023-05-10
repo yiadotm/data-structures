@@ -1,11 +1,10 @@
 /********************************************************************************* 
 * Danee Dang, dudang
-* 2023 Spring CSE101 PA3
-* FindComponents.c
+* 2023 Spring CSE101 PA4
+* Sparse.c
 * The main executable for this program. 
-* It reads multiple pairs of values to "0-0" from a specified 
-* input file and sorts the file from least to greatest for each adj List.
-* It then finds the strongly connected components from the graph using DFS.
+* It reads in an input file that contains the data for 2 matrices and 
+* runs several arithmetic operations and outputs in a txt file.
 *********************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,6 +43,7 @@ int main(int argc, char *argv[]) {
    Matrix A = newMatrix(n);
    Matrix B = newMatrix(n);
    Matrix sA, ApB, ApA, BsA, AsA, T, AmB, BmB;
+
    for (int i = 0; i < a; i++) {
     int r, c;
     double v;
@@ -124,6 +124,9 @@ int main(int argc, char *argv[]) {
    freeMatrix(&T);
    freeMatrix(&AmB);
    freeMatrix(&BmB);
+
+   fclose(infile);
+   fclose(outfile);
 
    return 0;
 }
