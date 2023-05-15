@@ -25,7 +25,7 @@ List::Node::Node(ListElement x){
 
 List::List() {
    frontDummy = new Node(0);
-   backDummy = new Node(0);
+   backDummy = new Node(1);
    beforeCursor = frontDummy;
    afterCursor = backDummy;
    pos_cursor = 0;
@@ -36,7 +36,7 @@ List::List() {
 List::List(const List& L) {
     //empty list
     frontDummy = new Node(0);
-    backDummy = new Node(0);
+    backDummy = new Node(1);
     beforeCursor = frontDummy;
     afterCursor = backDummy;
     pos_cursor = 0;
@@ -44,8 +44,8 @@ List::List(const List& L) {
 
     //load elements
     Node* N = L.frontDummy->next;
-    while(N != nullptr) {
-        this->insertAfter(N->data);
+    while(N != backDummy) {
+        this->insertBefore(N->data);
         N = N->next;
     }
 }
@@ -54,7 +54,7 @@ List::List(const List& L) {
 List::~List() {
     moveBack();
     while (num_elements>0) {
-        eraseAfter();
+        eraseBefore();
     }
 }
 
@@ -63,7 +63,7 @@ List::~List() {
 // length()
 // Returns the length of this List.
 int List::length() const {
-    return(num_elements-1);
+    return(num_elements);
 }
 
 // front()
@@ -99,7 +99,7 @@ int List::position() const {
 // Returns the element after the cursor.
 // pre: position()<length()
 ListElement List::peekNext() const {
-    if (pos_cursor <0 || pos_cursor > length()) {
+    if (pos_cursor <=0 || pos_cursor >= length()) {
         throw std::length_error("List Error: peekNext(): out of bounds");
     }        
     return(afterCursor->data);
@@ -109,7 +109,7 @@ ListElement List::peekNext() const {
 // Returns the element before the cursor.
 // pre: position()>0
 ListElement List::peekPrev() const {
-    if (pos_cursor <0 || pos_cursor > length()) {
+    if (pos_cursor <=0 || pos_cursor >= length()) {
         throw std::length_error("List Error: peekPrev(): out of bounds");
     }        
     return(beforeCursor->data);
@@ -124,8 +124,8 @@ void List::clear() {
         return;
     }
     moveFront();
-    while(frontDummy->next != nullptr) {
-        eraseAfter();
+    while(frontDummy->next != backDummy) {
+        eraseBefore();
     }
     num_elements = 0;
     pos_cursor = 0;
@@ -138,8 +138,11 @@ void List::moveFront() {
         return;
     }
     pos_cursor = 0;
-    beforeCursor = frontDummy;
-    afterCursor = frontDummy->next;
+    beforeCursor = frontDummy->next;
+    beforeCursor->prev= frontDummy;
+    afterCursor->prev = beforeCursor;
+    afterCursor->next = frontDummy->next;
+    frontDummy->next->prev = afterCursor;
 }
 
 // moveBack()
@@ -148,9 +151,17 @@ void List::moveBack() {
     if (length() == 0) {
         return;
     }
-    pos_cursor = length();
-    afterCursor = backDummy;
-    beforeCursor = backDummy->prev;
+    if (pos_cursor == length() -1) {
+        return;
+    }
+    pos_cursor = length() - 1;
+    backDummy->prev = afterCursor;
+    afterCursor->next = backDummy;
+    afterCursor->prev = beforeCursor;
+    beforeCursor->next = afterCursor;
+    beforeCursor->prev = backDummy->prev;
+    backDummy->prev->next = beforeCursor;
+
 }
 
 // moveNext()
@@ -191,40 +202,7 @@ ListElement List::movePrev() {
 // Inserts x after cursor.
 void List::insertAfter(ListElement x) {
     Node* N = new Node(x);
-    // N->prev = afterCursor;
-    // N->next = afterCursor->next;
-    // afterCursor->next = N;
-    // N->next->prev = N;
-    std::cout << "huh0\n";
-    N->next = afterCursor;
-    std::cout << "huh2\n";
-    N->prev = beforeCursor;
-    std::cout << "huh1\n";
-    afterCursor->prev = N;
-    //std::cout << "huh3\n";
 
-    if (beforeCursor->prev != NULL) {
-        beforeCursor->prev->next = N;
-    }
-
-
-
-
-
-  
-
-    num_elements++;
-}
-
-
-// insertBefore()
-// Inserts x before cursor.
-void List::insertBefore(ListElement x) {
-    Node* N = new Node(x);
-    // beforeCursor->prev->next = N;
-    // N->prev = beforeCursor->prev;
-    // beforeCursor->prev = N;
-    // N->next = beforeCursor;
     N->next = beforeCursor->next;
     beforeCursor->next = N;
     N->prev = beforeCursor;
@@ -232,6 +210,27 @@ void List::insertBefore(ListElement x) {
 
 
 
+    // pos_cursor++;
+    num_elements++;
+
+
+  
+
+    // num_elements++;
+}
+
+
+// insertBefore()
+// Inserts x before cursor.
+void List::insertBefore(ListElement x) {
+    Node* N = new Node(x);
+    N->next = afterCursor;
+    afterCursor->prev = N;
+    beforeCursor->next = N;
+    N->prev = beforeCursor;
+
+
+    beforeCursor = N;
     pos_cursor++;
     num_elements++;
 
@@ -402,15 +401,17 @@ std::string List::to_string() const {
     // return s;
 
     Node* N = nullptr;
-    std::string s = "()";
+    std::string s = "(";
     for (N =frontDummy->next; N != nullptr; N = N->next) {
         s += std::to_string(N->data);
         if (N == backDummy->prev) {
             s += ")";
+            break;
         }
         else {
             s += ", ";
         }
+
     }
     return s;
 
