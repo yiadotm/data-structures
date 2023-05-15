@@ -18,16 +18,16 @@ ListTest : ListTest.o List.o
 	g++ -std=c++17 -Wall -o ListTest ListTest.o List.o 
 
 ListTest.o : List.h ListTest.cpp
-	g++ -std=c++17 -Wall -c ListTest.cpp
+	g++ -std=c++17 -Wall -c -g ListTest.cpp
 
 List.o : List.h List.cpp
-	g++ -std=c++17 -Wall -c List.cpp
+	g++ -std=c++17 -Wall -c -g List.cpp
 
 clean :
 	rm -f Shuffle Shuffle.o ListTest ListTest.o List.o
 
 check1 : ListTest
-	valgrind --leak-check=full ListTest
+	valgrind --leak-check=full ./ListTest
 
 check2 : Shuffle
-	valgrind --leak-check=full Shuffle 35
+	valgrind --leak-check=full ./Shuffle 35

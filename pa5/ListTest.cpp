@@ -15,14 +15,15 @@ int main(){
 
    int i, n=10;
    List A, B, C, D;
-
+   cout << "here1\n";
    for(i=1; i<=n; i++){
       A.insertAfter(i);
+      cout << "here3\n";
       B.insertAfter(11-i);
       C.insertBefore(i);
       D.insertBefore(11-i);
    }
-
+   cout << "here2\n";
    cout << endl;
    cout << "A = " << A << endl;
    cout << "A.position() = " << A.position() << endl;
@@ -33,7 +34,7 @@ int main(){
    cout << "D = " << D << endl;
    cout << "D.position() = " << D.position() << endl;
    cout << endl;
-
+   cout << "here3\n";
    A.moveBack();
    B.moveBack();
    C.moveFront();
