@@ -44,9 +44,12 @@ List::List(const List& L) {
 
     //load elements
     Node* N = L.frontDummy->next;
-    while(N != backDummy) {
+    while(true) {
         this->insertBefore(N->data);
         N = N->next;
+        if (N == backDummy->prev) {
+            break;
+        }
     }
 }
 
@@ -352,38 +355,61 @@ int List::findPrev(ListElement x) {
 // is not moved with respect to the retained elements, i.e. it lies between 
 // the same two retained elements that it did before cleanup() was called.
 void List::cleanup() {
-    moveFront();
-    List S = *this;
-    S.moveFront();
-    for (int i = 0; i < length(); i++) {
-        ListElement x = moveNext();
-        for (int y = i; y < S.length(); y++) {
-            ListElement j = moveNext();
-            if (j == x) {
-                eraseBefore();
+
+    // List S = List();
+    // S = *this;
+    // std::cout << S << std::endl;
+    // S.moveFront();
+    // for (int i = 0; i < length(); i++) {
+    //     ListElement x = moveNext();
+    //     for (int y = i; y < S.length(); y++) {
+    //         ListElement j = moveNext();
+    //         if (j == x) {
+    //             eraseBefore();
+    //         }
+    //     }
+    // }
+
+    Node* N = this->frontDummy->next;
+    Node* M = nullptr;
+    while (N != backDummy) {
+        ListElement x = N->data;
+        M = N->next;
+        while (M != backDummy) {
+            ListElement y = M->data;
+            if (x ==y) {
+                //erase y
+                return;
+
+
             }
+            M = M->next;
         }
+
+        N = N->next;
     }
+    return;
 }
 
 // concat()
 // Returns a new List consisting of the elements of this List, followed by
 // the elements of L. The cursor in the returned List will be at postion 0.
 List List::concat(const List& L) const {
-    std::cout << "hi" << std::endl;
-    List R = *this;
-    std::cout << "hi2" << std::endl;
-    List LL = L;
-    R.num_elements = this->num_elements + LL.num_elements;
-    LL.moveFront();
-    R.moveBack();
-    for (int i = 0; i < LL.num_elements; i++) {
-        ListElement x = LL.moveNext();
-        R.insertAfter(x);
+    
+   List J;
+   Node* N = this->frontDummy->next;
+   Node* M = L.frontDummy->next;
+   
+    while( N!=backDummy ){
+        J.insertBefore(N->data);
+        N = N->next;
     }
-
-    R.moveFront();
-    return R;
+    while( M!=L.backDummy){
+        J.insertBefore(M->data);
+        M = M->next;
+    }
+    J.moveFront();
+    return J;
 }
 
 // to_string()
@@ -449,15 +475,27 @@ bool operator==( const List& A, const List& B ) {
 // operator=()
 // Overwrites the state of this List with state of L.
 List& List::operator=( const List& L ) {
+
+
     if (this != &L) {
         List temp = L;
-
         std::swap(frontDummy, temp.frontDummy);
         std::swap(backDummy, temp.backDummy);
         std::swap(beforeCursor, temp.beforeCursor);
         std::swap(afterCursor, temp.afterCursor);
         std::swap(num_elements, temp.num_elements);
         std::swap(pos_cursor, temp.pos_cursor);
+
     }
     return *this;
+
+    // List S = List();
+    // Node* N = nullptr;
+    // for (N =frontDummy->next; N != nullptr; N = N->next) {
+    //     S.insertBefore(N->data);
+    //     if (N == backDummy->prev) { 
+    //         break;
+    //     }
+    // }
+    // return S;
 }

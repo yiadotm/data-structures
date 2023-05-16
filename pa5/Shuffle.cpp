@@ -50,9 +50,13 @@ int main(int argc, char * argv[]){
     count = stoi(argv[1]);
     cout << "deck size shuffle count" << endl;
     cout << "-----------------------" << endl;
+
     for (int i = 0; i < count; i++) {
-        cout << i+1 + "      ";
+        int x = i+1;
+        cout << x;
+        cout << "\t\t\t" << endl;
         List L, LL;
+        
         for (int j = 0; j < i; j++) {
             L.insertBefore(j);
         }
