@@ -28,6 +28,8 @@ List::List() {
    backDummy = new Node(1);
    beforeCursor = frontDummy;
    afterCursor = backDummy;
+   frontDummy->next = backDummy;
+   backDummy->prev = frontDummy;
    pos_cursor = 0;
    num_elements = 0;
 }
@@ -38,6 +40,8 @@ List::List(const List& L) {
     // std::cout << "hi1" << std::endl;
     frontDummy = new Node(0);
     backDummy = new Node(1);
+    frontDummy->next = backDummy;
+    backDummy->prev = frontDummy;
     beforeCursor = frontDummy;
     afterCursor = backDummy;
     pos_cursor = 0;
@@ -47,21 +51,19 @@ List::List(const List& L) {
     Node* N = L.frontDummy->next;
     while(N != L.backDummy) {
         // std::cout << "hi1" << std::endl;
-        this->insertBefore(N->data);
+        insertBefore(N->data);
         N = N->next;
         // std::cout << "hi2" << std::endl;
 
-        
 
     }
 }
 
 // Destructor
 List::~List() {
-        moveBack();
-        while (num_elements>0) {
-            eraseBefore();
-        }
+    clear();
+    delete frontDummy;
+    delete backDummy;
 }
 
 // Access functions -----------------------------------------------------------
@@ -131,7 +133,8 @@ void List::clear() {
         return;
     }
     
-    while(frontDummy->next != backDummy) {
+    moveBack();
+    while (num_elements>0) {
         eraseBefore();
     }
     num_elements = 0;
@@ -322,10 +325,11 @@ void List::eraseBefore() {
 // at position length(), and returns -1. 
 int List::findNext(ListElement x) {
 
-    for (int i = 0; i < (length() - pos_cursor); i++) {
-        // std::cout << std::to_string(pos_cursor) + ": ";
+    for (Node* N = afterCursor; N != backDummy; N = N->next) {
+        // std::cout << "pos: " << pos_cursor;
         // std::cout << std::to_string(peekNext()) + "\n";
         ListElement y = moveNext();
+        // std::cout << ", y: " << y << std::endl;
         if (x == y) {
             return pos_cursor;
         }
@@ -361,41 +365,51 @@ int List::findPrev(ListElement x) {
 // the same two retained elements that it did before cleanup() was called.
 void List::cleanup() {
 
-    // List S = List();
-    // S = *this;
-    // std::cout << S << std::endl;
-    // S.moveFront();
-    // for (int i = 0; i < length(); i++) {
-    //     ListElement x = moveNext();
-    //     for (int y = i; y < S.length(); y++) {
-    //         ListElement j = moveNext();
-    //         if (j == x) {
-    //             eraseBefore();
-    //         }
-    //     }
-    // }
-    // std::cout << "hi1" << std::endl;
-    Node* N = this->frontDummy->next;
-    // std::cout << "hi" << std::endl;
-    Node* M = nullptr;
-    // std::cout << "hi2" << std::endl;
-    while (N != backDummy) {
-        ListElement x = N->data;
-        M = N->next;
-        while (M != backDummy) {
-            ListElement y = M->data;
-            if (x ==y) {
-                //erase y
-                return;
 
-
+    Node* B = beforeCursor;
+    Node* A = afterCursor;
+    int p = pos_cursor;
+    Node* currB = frontDummy;
+    Node* currA = frontDummy->next;
+    for (int i = 0; i < length(); i++) {
+        // std::cout << "pos:" << pos_cursor << std::endl;
+        //move cursor one to the right
+        beforeCursor = currB = currA;
+        afterCursor = currA = currA->next;
+        ListElement x = beforeCursor->data;
+        pos_cursor = i+1;
+        // std::cout << "find:" << findNext(x) << std::endl;
+        while (true) {
+            int find = findNext(x);
+            if (find == -1) {
+                break;
             }
-            M = M->next;
-        }
+            if (find == p) {
+                B = B->prev;
+            }
+            if (find == p+1) {
+                A = A->next;
+            }
+            if (find <= p) {
+                p--;
+            }
+            if (find == i+2) {
+                currA = currA->next;
+            }
+            // std::cout << "pos2: " << pos_cursor << std::endl;
+            eraseBefore();
 
-        N = N->next;
+            
+        }
+        // std::cout << "pos1:" << pos_cursor << std::endl;
+
+        
     }
-    return;
+    beforeCursor = B;
+    afterCursor = A;
+    pos_cursor = p;
+
+
 }
 
 // concat()
@@ -483,7 +497,6 @@ bool operator==( const List& A, const List& B ) {
 // Overwrites the state of this List with state of L.
 List& List::operator=( const List& L ) {
 
-    // std::cout << "hi1" << std::endl;
     if (this != &L) {
         // std::cout << "hi1" << std::endl;
         List temp = L;
@@ -507,3 +520,5 @@ List& List::operator=( const List& L ) {
     // }
     // return S;
 }
+
+
