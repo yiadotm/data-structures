@@ -138,29 +138,36 @@ void List::moveFront() {
         return;
     }
     pos_cursor = 0;
-    beforeCursor = frontDummy->next;
-    beforeCursor->prev= frontDummy;
-    afterCursor->prev = beforeCursor;
-    afterCursor->next = frontDummy->next;
-    frontDummy->next->prev = afterCursor;
+    // frontDummy->next = beforeCursor;
+    // beforeCursor->prev = frontDummy;
+    // afterCursor->next = frontDummy->next;
+    // frontDummy->next->prev = afterCursor;
+
+    
+    // //in case
+    // beforeCursor->next = afterCursor;
+    // afterCursor->prev = beforeCursor;
+    beforeCursor = frontDummy;
+    afterCursor = beforeCursor->next;
 }
 
 // moveBack()
 // Moves cursor to position length() in this List.
 void List::moveBack() {
-    if (length() == 0) {
+    if (pos_cursor == length()) {
         return;
     }
-    if (pos_cursor == length() -1) {
-        return;
-    }
-    pos_cursor = length() - 1;
-    backDummy->prev = afterCursor;
-    afterCursor->next = backDummy;
-    afterCursor->prev = beforeCursor;
-    beforeCursor->next = afterCursor;
-    beforeCursor->prev = backDummy->prev;
-    backDummy->prev->next = beforeCursor;
+    pos_cursor = length();
+    // backDummy->prev->next = beforeCursor;
+    // beforeCursor->prev = backDummy->prev;
+    // afterCursor->next = backDummy;
+    // backDummy->prev = afterCursor;
+
+    // // in case
+    // beforeCursor->next = afterCursor;
+    // afterCursor->prev = beforeCursor;   
+    afterCursor = backDummy;
+    beforeCursor = afterCursor->prev; 
 
 }
 
@@ -175,6 +182,7 @@ ListElement List::moveNext() {
 
     //move afterCursor next
     Node* N = afterCursor;
+    // ListElement x = afterCursor->data;
     afterCursor = afterCursor->next;
     beforeCursor = N;
     pos_cursor++;
@@ -192,10 +200,11 @@ ListElement List::movePrev() {
 
     //move beforeCursor before
     Node* N = beforeCursor;
+    ListElement x = beforeCursor->data;
     beforeCursor = beforeCursor->prev;
     afterCursor= N;
     pos_cursor--;
-    return(peekNext());
+    return(x);
 }
 
 // insertAfter()
@@ -203,11 +212,13 @@ ListElement List::movePrev() {
 void List::insertAfter(ListElement x) {
     Node* N = new Node(x);
 
-    N->next = beforeCursor->next;
+    N->next = afterCursor;
+    afterCursor->prev = N;
     beforeCursor->next = N;
     N->prev = beforeCursor;
-    beforeCursor->next->prev = N;
 
+
+    afterCursor = N;
 
 
     // pos_cursor++;
@@ -286,7 +297,7 @@ void List::eraseBefore() {
     beforeCursor = N->prev;
     beforeCursor->next = afterCursor;
     afterCursor->prev = beforeCursor;
-    delete N;
+    delete N;    
     num_elements--;
     pos_cursor--;
 
@@ -302,8 +313,10 @@ void List::eraseBefore() {
 // returns the final cursor position. If x is not found, places the cursor 
 // at position length(), and returns -1. 
 int List::findNext(ListElement x) {
-    moveFront();
-    for (int i = 0; i < length(); i++) {
+
+    for (int i = 0; i < (length() - pos_cursor); i++) {
+        // std::cout << std::to_string(pos_cursor) + ": ";
+        // std::cout << std::to_string(peekNext()) + "\n";
         ListElement y = moveNext();
         if (x == y) {
             return pos_cursor;
@@ -321,8 +334,7 @@ int List::findNext(ListElement x) {
 // returns the final cursor position. If x is not found, places the cursor 
 // at position 0, and returns -1. 
 int List::findPrev(ListElement x) {
-    moveBack();
-    for (int i = 0; i < length(); i++) {
+    for (int i = 0; i < pos_cursor+1; i++) {
         ListElement y = movePrev();
         if (x == y) {
             return pos_cursor;
@@ -377,28 +389,6 @@ List List::concat(const List& L) const {
 // separated sequence of elements, surrounded by parentheses.
 std::string List::to_string() const {
 
-    // std::string s = "(";
-
-    // for (R.moveFront(); R.position() < R.length(); R.moveNext()) {
-    //     s += std::to_string(R.peekPrev());
-    //     if (R.position() == (R.length() - 1)) {
-    //         s += ")";
-    //     }
-    //     else {
-    //         s += ", ";
-    //     }
-    // }
-    // Node* N = frontDummy->next;
-    // for (int i = 0; i < length(); i++) {
-    //     s += std::to_string(N->data);
-    //     if (i == (length() - 1)) {
-    //         s += ")";
-    //     }
-    //     else {
-    //         s += ", ";
-    //     }
-    // }
-    // return s;
 
     Node* N = nullptr;
     std::string s = "(";
