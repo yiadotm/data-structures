@@ -370,7 +370,9 @@ void List::cleanup() {
 // Returns a new List consisting of the elements of this List, followed by
 // the elements of L. The cursor in the returned List will be at postion 0.
 List List::concat(const List& L) const {
+    std::cout << "hi" << std::endl;
     List R = *this;
+    std::cout << "hi2" << std::endl;
     List LL = L;
     R.num_elements = this->num_elements + LL.num_elements;
     LL.moveFront();
