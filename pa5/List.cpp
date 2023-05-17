@@ -346,7 +346,7 @@ int List::findNext(ListElement x) {
 // returns the final cursor position. If x is not found, places the cursor 
 // at position 0, and returns -1. 
 int List::findPrev(ListElement x) {
-    for (int i = 0; i < pos_cursor+1; i++) {
+    for (Node* N = beforeCursor; N != frontDummy; N = N->prev) {
         ListElement y = movePrev();
         if (x == y) {
             return pos_cursor;
