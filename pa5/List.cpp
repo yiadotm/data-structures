@@ -384,6 +384,9 @@ void List::cleanup() {
             if (find == -1) {
                 break;
             }
+            if (find == i+2) {
+                currA = currA->next;
+            }
             if (find == p) {
                 B = B->prev;
             }
@@ -393,9 +396,7 @@ void List::cleanup() {
             if (find <= p) {
                 p--;
             }
-            if (find == i+2) {
-                currA = currA->next;
-            }
+
             // std::cout << "pos2: " << pos_cursor << std::endl;
             eraseBefore();
 
