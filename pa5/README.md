@@ -15,7 +15,7 @@
 
 #### To run Lex:  
 > make Shuffle  
-> ./Lex *range*   
+> ./Shuffle *range*   
 
 #### To run ListTest:  
 > make ListTest  
