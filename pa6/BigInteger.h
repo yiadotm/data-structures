@@ -1,7 +1,7 @@
 /********************************************************************************* 
 * Danee Dang, dudang
 * 2023 Spring CSE101 PA6
-* List.h
+* BigInteger.h
 * File Implementation of BigInteger ADT
 *********************************************************************************/
 #include<iostream>
