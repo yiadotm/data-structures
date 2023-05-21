@@ -25,7 +25,7 @@ List::Node::Node(ListElement x){
 
 List::List() {
    frontDummy = new Node(0);
-   backDummy = new Node(1);
+   backDummy = new Node(0);
    beforeCursor = frontDummy;
    afterCursor = backDummy;
    frontDummy->next = backDummy;
@@ -39,7 +39,7 @@ List::List(const List& L) {
     //empty list
     // std::cout << "hi1" << std::endl;
     frontDummy = new Node(0);
-    backDummy = new Node(1);
+    backDummy = new Node(0);
     frontDummy->next = backDummy;
     backDummy->prev = frontDummy;
     beforeCursor = frontDummy;
@@ -439,7 +439,9 @@ List List::concat(const List& L) const {
 // separated sequence of elements, surrounded by parentheses.
 std::string List::to_string() const {
 
-
+    if (length() == 0) {
+        return "";
+    }
     Node* N = nullptr;
     std::string s = "(";
     for (N =frontDummy->next; N != nullptr; N = N->next) {

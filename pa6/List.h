@@ -11,7 +11,7 @@
 #define List_H_INCLUDE_
 
 // Exported types -------------------------------------------------------------
-typedef int ListElement;
+typedef long ListElement;
 
 class List{
 
