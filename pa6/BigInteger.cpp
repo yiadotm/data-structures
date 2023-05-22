@@ -237,7 +237,21 @@ void sumList(List& S, List A, List B, int sgn) {
 // digits), then returns the sign of the resulting integer. Used
 // by add(), sub() and mult().
 int normalizeList(List& L) {
-    
+    int sgn = 0;
+    long carry = 0;
+    if (L.front() < 0) {
+        sgn = -1;
+        negateList(L);
+        normalizeList(L);
+    }
+
+    for (L.moveBack(); L.position() > 0; L.movePrev()) {
+        long temp = L.peekPrev() - carry;
+        long high = temp % base;
+
+    }
+
+    return sgn;
 }
 
 
