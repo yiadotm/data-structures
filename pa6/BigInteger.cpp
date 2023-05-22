@@ -194,7 +194,59 @@ void negateList(List& L) {
 // Overwrites the state of S with A + sgn*B (considered as vectors).
 // Used by both sum() and sub().
 void sumList(List& S, List A, List B, int sgn) {
+    S.clear();
+    if (A.length() == 0) {
+        S = B;
+        if (sgn == -1) {
+            negateList(S);
+        }
+        return;
+    }
+
+    if (B.length() == 0) {
+        S = A;
+        return;
+    }
+
+    A.moveBack();
+    B.moveBack();
+    while (A.position() > 0 && B.position() > 0) {
+        S.insertAfter(A.peekPrev() + sgn * B.peekPrev());
+        A.movePrev();
+        B.movePrev();
+    }
+
+    if (A.position() != 0) {
+        while (A.position() > 0) {
+            S.insertAfter(A.peekPrev());
+            A.movePrev();
+        }
+    }
+
+    if (B.position() != 0) {
+        while (B.position() > 0) {
+            S.insertAfter(sgn * B.peekPrev());
+            B.movePrev();
+        }
+    }
+
+}
+
+// normalizeList()
+// Performs carries from right to left (least to most significant
+// digits), then returns the sign of the resulting integer. Used
+// by add(), sub() and mult().
+int normalizeList(List& L) {
     
+}
+
+
+// scalarMultList()
+// Multiplies L (considered as a vector) by m. Used by mult().
+void scalarMultList(List& L, ListElement m) {
+    for (L.moveFront(); L.position() < L.length(); L.moveNext()) {
+        L.setAfter(L.peekNext() * m);
+    }
 }
 
 
