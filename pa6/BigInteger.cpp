@@ -15,7 +15,7 @@
 #include "BigInteger.h"
 
 
-int power = 2; 
+int power = 1; 
 long base = pow(10, power);
 // Class Constructors & Destructors -------------------------------------------
 // BigInteger()
@@ -181,79 +181,97 @@ void BigInteger::negate() {
 
 // BigInteger Arithmetic operations ----------------------------------------
 
-// negateList()
-// Changes the sign of each integer in List L. Used by sub().
-void negateList(List& L) {
-    for (L.moveFront(); L.position() < L.length(); L.moveNext()) {
-        long x = L.peekNext();
-        L.setAfter(x * -1);
+// // negateList()
+// // Changes the sign of each integer in List L. Used by sub().
+// void negateList(List& L) {
+//     for (L.moveFront(); L.position() < L.length(); L.moveNext()) {
+//         long x = L.peekNext();
+//         L.setAfter(x * -1);
+//     }
+// }
+
+// // sumList()
+// // Overwrites the state of S with A + sgn*B (considered as vectors).
+// // Used by both sum() and sub().
+// void sumList(List& S, List A, List B, int sgn) {
+//     S.clear();
+//     if (A.length() == 0) {
+//         S = B;
+//         if (sgn == -1) {
+//             negateList(S);
+//         }
+//         return;
+//     }
+
+//     if (B.length() == 0) {
+//         S = A;
+//         return;
+//     }
+
+//     A.moveBack();
+//     B.moveBack();
+//     while (A.position() > 0 && B.position() > 0) {
+//         S.insertAfter(A.peekPrev() + sgn * B.peekPrev());
+//         A.movePrev();
+//         B.movePrev();
+//     }
+
+//     if (A.position() != 0) {
+//         while (A.position() > 0) {
+//             S.insertAfter(A.peekPrev());
+//             A.movePrev();
+//         }
+//     }
+
+//     if (B.position() != 0) {
+//         while (B.position() > 0) {
+//             S.insertAfter(sgn * B.peekPrev());
+//             B.movePrev();
+//         }
+//     }
+
+// }
+
+// // normalizeList()
+// // Performs carries from right to left (least to most significant
+// // digits), then returns the sign of the resulting integer. Used
+// // by add(), sub() and mult().
+// int normalizeList(List& L) {
+//     int sgn = 1;
+//     long carry = 0;
+//     if (L.front() < 0) {
+//         sgn = -1;
+//         negateList(L);
+//         normalizeList(L);
+//     }
+
+//     for (L.moveBack(); L.position() > 0; L.movePrev()) {
+//         long after = L.peekPrev() - carry;
+//         long subtract;
+//         if (after > 0) {
+//             subtract = (after + base -1) / base;
+//         }
+//         else {
+//             subtract = (after - base - 1) / base;
+//         }
+
+//         L.setBefore(after - (-1 * subtract));
+//         carry = subtract / base;
+
+//     }
+
+//     return sgn;
+// }
+
+
+// shiftList()
+// Prepends p zero digits to L, multiplying L by base^p. Used by mult().
+void shiftList(List& L, int p) {
+    L.moveBack();
+    for (int i = 0; i < p; i++) {
+        L.insertBefore(0);
     }
 }
-
-// sumList()
-// Overwrites the state of S with A + sgn*B (considered as vectors).
-// Used by both sum() and sub().
-void sumList(List& S, List A, List B, int sgn) {
-    S.clear();
-    if (A.length() == 0) {
-        S = B;
-        if (sgn == -1) {
-            negateList(S);
-        }
-        return;
-    }
-
-    if (B.length() == 0) {
-        S = A;
-        return;
-    }
-
-    A.moveBack();
-    B.moveBack();
-    while (A.position() > 0 && B.position() > 0) {
-        S.insertAfter(A.peekPrev() + sgn * B.peekPrev());
-        A.movePrev();
-        B.movePrev();
-    }
-
-    if (A.position() != 0) {
-        while (A.position() > 0) {
-            S.insertAfter(A.peekPrev());
-            A.movePrev();
-        }
-    }
-
-    if (B.position() != 0) {
-        while (B.position() > 0) {
-            S.insertAfter(sgn * B.peekPrev());
-            B.movePrev();
-        }
-    }
-
-}
-
-// normalizeList()
-// Performs carries from right to left (least to most significant
-// digits), then returns the sign of the resulting integer. Used
-// by add(), sub() and mult().
-int normalizeList(List& L) {
-    int sgn = 0;
-    long carry = 0;
-    if (L.front() < 0) {
-        sgn = -1;
-        negateList(L);
-        normalizeList(L);
-    }
-
-    for (L.moveBack(); L.position() > 0; L.movePrev()) {
-        long temp = L.peekPrev() - carry;
-        long high = temp % base;
-
-    }
-
-    return sgn;
-}
-
 
 // scalarMultList()
 // Multiplies L (considered as a vector) by m. Used by mult().
@@ -267,13 +285,19 @@ void scalarMultList(List& L, ListElement m) {
 // // add()
 // // Returns a BigInteger representing the sum of this and N.
 // BigInteger BigInteger::add(const BigInteger& N) const {
-
+//     BigInteger S;
+//     sumList(S, this, N, 1);
+//     normalizeList(S);
+//     return S;
 // }
 
 // // sub()
 // // Returns a BigInteger representing the difference of this and N.
 // BigInteger BigInteger::sub(const BigInteger& N) const {
-
+//     BigInteger S;
+//     sumList(S, this, N, -1);
+//     normalizeList(S);
+//     return S;
 // }
 
 // // mult()

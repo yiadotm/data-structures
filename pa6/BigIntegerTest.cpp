@@ -7,65 +7,70 @@
 #include<iostream>
 #include<string>
 #include<stdexcept>
+#include <math.h>
 #include "BigInteger.h"
 
 using namespace std;
 
-// // negateList()
-// // Changes the sign of each integer in List L. Used by sub().
-// void negateList(List& L) {
-//     for (L.moveFront(); L.position() < L.length(); L.moveNext()) {
-//         long x = L.peekNext();
-//         L.setAfter(x * -1);
-//     }
-// }
+// negateList()
+// Changes the sign of each integer in List L. Used by sub().
+void negateList(List& L) {
+    for (L.moveFront(); L.position() < L.length(); L.moveNext()) {
+        long x = L.peekNext();
+        L.setAfter(x * -1);
+    }
+}
+// normalizeList()
+// Performs carries from right to left (least to most significant
+// digits), then returns the sign of the resulting integer. Used
+// by add(), sub() and mult().
+int normalizeList(List& L, int base) {
+    int sgn = 1;
+    long carry = 0;
+    if (L.front() < 0) {
+        sgn = -1;
+        negateList(L);
+        normalizeList(L, base);
+    }
+    cout << "here" << endl;
+    for (L.moveBack(); L.position() > 0; L.movePrev()) {
+        long old = L.peekPrev();
+        long newValue;
+        long subtract = old + carry;
 
-// // sumList()
-// // Overwrites the state of S with A + sgn*B (considered as vectors).
-// // Used by both sum() and sub().
-// void sumList(List& S, List A, List B, int sgn) {
-//     S.clear();
-//     if (A.length() == 0) {
-//         S = B;
-//         if (sgn == -1) {
-//             negateList(S);
-//         }
-//         return;
-//     }
+        if (subtract < 0) {
+            newValue = -1 * old;
+            newValue = ((newValue + carry) % base);
+    
+            carry = subtract / base;
+            // carry = (base + (subtract % base)) % base;
+        }
+        else {
+            newValue = subtract % base;
 
-//     if (B.length() == 0) {
-//         S = A;
-//         return;
-//     }
+            carry = subtract / base;
+            // carry = (base + (subtract % base)) % base;
 
-//     A.moveBack();
-//     B.moveBack();
-//     while (A.position() > 0 && B.position() > 0) {
-//         S.insertAfter(A.peekPrev() + sgn * B.peekPrev());
-//         A.movePrev();
-//         B.movePrev();
-//     }
+            
+        }
 
-//     if (A.position() != 0) {
-//         while (A.position() > 0) {
-//             S.insertAfter(A.peekPrev());
-//             A.movePrev();
-//         }
-//     }
+        L.setBefore(newValue);
+        // carry = (old + carry ) / base;
+        cout << "old: " << old << ", subtract: " << subtract << ", new: " << newValue << ", carry: " << carry << endl;
+    }
+    if (carry > 0) {
+        L.insertBefore(carry);
+    }
 
-//     if (B.position() != 0) {
-//         while (B.position() > 0) {
-//             S.insertAfter(sgn * B.peekPrev());
-//             B.movePrev();
-//         }
-//     }
+    return sgn;
+}
 
-// }
-// // scalarMultList()
-// // Multiplies L (considered as a vector) by m. Used by mult().
-// void scalarMultList(List& L, ListElement m) {
-//     for (L.moveFront(); L.position() < L.length(); L.moveNext()) {
-//         L.setAfter(L.peekNext() * m);
+// // shiftList()
+// // Prepends p zero digits to L, multiplying L by base^p. Used by mult().
+// void shiftList(List& L, int p) {
+//     L.moveBack();
+//     for (int i = 0; i < p; i++) {
+//         L.insertBefore(0);
 //     }
 // }
 
@@ -97,25 +102,30 @@ int main(){
 
     List L, LL, S;
     L.insertBefore(1);
-    L.insertBefore(2);
-    L.insertBefore(3);
-    L.insertBefore(4);
-    L.insertBefore(5);
-    L.insertBefore(6);
-    L.insertBefore(7);
+    L.insertBefore(-90);
+    L.insertBefore(9);
+    L.insertBefore(73);
+    L.insertBefore(0);
+    L.insertBefore(-500);
+    // L.insertBefore(7);
 
-    LL.insertBefore(1);
-    LL.insertBefore(2);
-    LL.insertBefore(3);
-    LL.insertBefore(4);
-    LL.insertBefore(5);
-    LL.insertBefore(6);
-    LL.insertBefore(7);
+    LL.insertBefore(23);
+    LL.insertBefore(-70);
+    LL.insertBefore(-46);
+    S.insertBefore(153);
+    S.insertBefore(112);
+    S.insertBefore(112);
+    // S.insertBefore(7);
 
-    cout << "L: " << L << endl;
-    cout << "LL: " << LL << endl;
-    scalarMultList(L, -14);
-    cout << "L * 5: " << L << endl << endl;
-    
+    cout << "L: " << L << endl << endl;
+    cout << "LL: " << LL << endl << endl;
+    cout << "S: " << S << endl << endl;
+    normalizeList(L, 10);
+    normalizeList(LL, 100);
+    normalizeList(S, 5);
+    cout << "L after normalize: " << L << endl << endl;
+    cout << "LL after normalize: " << LL << endl << endl;
+    cout << "S after normalize: " << S << endl << endl;
+    cout << "-46 % 100 = " << -46 % 100 << endl << endl;
     return 0;
 }

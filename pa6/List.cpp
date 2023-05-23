@@ -273,7 +273,7 @@ void List::setAfter(ListElement x) {
 // Overwrites the List element before the cursor with x.
 // pre: position()>0
 void List::setBefore(ListElement x) {
-    if (pos_cursor >= length()) {
+    if (pos_cursor <= 0) {
         throw std::range_error("List Error: setBefore(): out of bounds");
     }    
 
