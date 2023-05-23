@@ -38,24 +38,24 @@ int normalizeList(List& L, int base) {
         long newValue;
         long subtract = old + carry;
 
-        if (subtract < 0) {
+        if (old < 0) {
             newValue = -1 * old;
             newValue = ((newValue + carry) % base);
     
-            carry = subtract / base;
+            // carry = subtract / base;
             // carry = (base + (subtract % base)) % base;
         }
         else {
             newValue = subtract % base;
 
-            carry = subtract / base;
+            // carry = subtract / base;
             // carry = (base + (subtract % base)) % base;
 
             
         }
 
         L.setBefore(newValue);
-        // carry = (old + carry ) / base;
+        carry = subtract / base;
         cout << "old: " << old << ", subtract: " << subtract << ", new: " << newValue << ", carry: " << carry << endl;
     }
     if (carry > 0) {
@@ -122,7 +122,7 @@ int main(){
     cout << "S: " << S << endl << endl;
     normalizeList(L, 10);
     normalizeList(LL, 100);
-    normalizeList(S, 5);
+    normalizeList(S, 100);
     cout << "L after normalize: " << L << endl << endl;
     cout << "LL after normalize: " << LL << endl << endl;
     cout << "S after normalize: " << S << endl << endl;
