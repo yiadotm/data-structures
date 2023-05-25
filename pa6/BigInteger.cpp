@@ -15,7 +15,7 @@
 #include "BigInteger.h"
 
 
-int power = 1; 
+int power = 2; 
 long base = pow(10, power);
 // Class Constructors & Destructors -------------------------------------------
 // BigInteger()
@@ -54,11 +54,11 @@ BigInteger::BigInteger(long x) {
                 y = (y / base);
                 continue;
             }
-            // std::cout << "i: " << y << " % " << base << " = " << i << std::endl;
+            std::cout << "i: " << y << " % " << base << " = " << i << std::endl;
             digits.insertAfter(i);
             y = (y - i);
             
-            // std::cout << "y: " << y << std::endl;
+            std::cout << "y: " << y << std::endl;
             
         }
     }
@@ -181,87 +181,130 @@ void BigInteger::negate() {
 
 // BigInteger Arithmetic operations ----------------------------------------
 
-// // negateList()
-// // Changes the sign of each integer in List L. Used by sub().
-// void negateList(List& L) {
-//     for (L.moveFront(); L.position() < L.length(); L.moveNext()) {
-//         long x = L.peekNext();
-//         L.setAfter(x * -1);
-//     }
-// }
+// negateList()
+// Changes the sign of each integer in List L. Used by sub().
+void negateList(List& L) {
+    for (L.moveFront(); L.position() < L.length(); L.moveNext()) {
+        long x = L.peekNext();
+        L.setAfter(x * -1);
+    }
+}
 
-// // sumList()
-// // Overwrites the state of S with A + sgn*B (considered as vectors).
-// // Used by both sum() and sub().
-// void sumList(List& S, List A, List B, int sgn) {
-//     S.clear();
-//     if (A.length() == 0) {
-//         S = B;
-//         if (sgn == -1) {
-//             negateList(S);
-//         }
-//         return;
-//     }
+// sumList()
+// Overwrites the state of S with A + sgn*B (considered as vectors).
+// Used by both sum() and sub().
+void sumList(List& S, List A, List B, int sgn) {
+    // List copyA = A;
+    // List copyB = B;
+    // normalizeList(copyA);
+    // normalizeList(copyB);
+    S.clear();
+    if (A.length() == 0) {
+        S = B;
+        if (sgn == -1) {
+            negateList(S);
+        }
+        return;
+    }
 
-//     if (B.length() == 0) {
-//         S = A;
-//         return;
-//     }
+    if (B.length() == 0) {
+        S = A;
+        return;
+    }
 
-//     A.moveBack();
-//     B.moveBack();
-//     while (A.position() > 0 && B.position() > 0) {
-//         S.insertAfter(A.peekPrev() + sgn * B.peekPrev());
-//         A.movePrev();
-//         B.movePrev();
-//     }
+    A.moveBack();
+    B.moveBack();
+    while (A.position() > 0 && B.position() > 0) {
+        S.insertAfter(A.peekPrev() + sgn * B.peekPrev());
+        A.movePrev();
+        B.movePrev();
+    }
 
-//     if (A.position() != 0) {
-//         while (A.position() > 0) {
-//             S.insertAfter(A.peekPrev());
-//             A.movePrev();
-//         }
-//     }
+    if (A.position() != 0) {
+        while (A.position() > 0) {
+            S.insertAfter(A.peekPrev());
+            A.movePrev();
+        }
+    }
 
-//     if (B.position() != 0) {
-//         while (B.position() > 0) {
-//             S.insertAfter(sgn * B.peekPrev());
-//             B.movePrev();
-//         }
-//     }
+    if (B.position() != 0) {
+        while (B.position() > 0) {
+            S.insertAfter(sgn * B.peekPrev());
+            B.movePrev();
+        }
+    }
 
-// }
+    // std::cout << S << std::endl;
+}
 
-// // normalizeList()
-// // Performs carries from right to left (least to most significant
-// // digits), then returns the sign of the resulting integer. Used
-// // by add(), sub() and mult().
-// int normalizeList(List& L) {
-//     int sgn = 1;
-//     long carry = 0;
-//     if (L.front() < 0) {
-//         sgn = -1;
-//         negateList(L);
-//         normalizeList(L);
-//     }
+// normalizeList()
+// Performs carries from right to left (least to most significant
+// digits), then returns the sign of the resulting integer. Used
+// by add(), sub() and mult().
+int normalizeList(List& L) {
+    int sgn = 1;
+    long carry = 0;
+    if (L.front() < 0) {
+        sgn = -1;
+        negateList(L);
+        // cout << L << endl;
+        normalizeList(L);
+    }
+    // cout << "here" << endl;
+    for (L.moveBack(); L.position() > 0; L.movePrev()) {
+        long old = L.peekPrev();
+        long newValue;
+        long subtract = old + carry;
 
-//     for (L.moveBack(); L.position() > 0; L.movePrev()) {
-//         long after = L.peekPrev() - carry;
-//         long subtract;
-//         if (after > 0) {
-//             subtract = (after + base -1) / base;
-//         }
-//         else {
-//             subtract = (after - base - 1) / base;
-//         }
+        if (subtract < 0) {
+            // newValue = -1 * old;
+            // newValue = ((newValue + carry) % base);
+            newValue = ((base + ((subtract) % base)) % base);
+            if (newValue > 0 && newValue < base) {
+                if (L.position() == 1) {
+                    L.setBefore(subtract);
+                    break;
+                }
+                carry = old / base;
+                // cout << "carry = (-1)old / base: " << carry << " = " << -1 * old << " / " << base << endl;
+                if (carry == 0) {
+                    carry = -1;
+                }
+            }
+            else {
+                if (newValue < base) {
+                    if (L.position() == 1) {
+                        L.setBefore(subtract);
+                        break;
+                    }
+                }
+                carry = subtract / base;
+            }
+            
+            // carry = (base + ((subtract) % base)) % base;
 
-//         L.setBefore(after - (-1 * subtract));
-//         carry = subtract / base;
+        }
+        else {
+            newValue = subtract % base;
+            carry = subtract / base;
+            // carry = (base + (subtract % base)) % base;
 
-//     }
+            
+        }
 
-//     return sgn;
-// }
+        L.setBefore(newValue);
+        // carry = subtract / base;
+        // std::cout << "position: " << L.position() << ", old: " << old << ", subtract: " << subtract << ", new: " << newValue << ", carry: " << carry << std::endl;
+    }
+    // std::cout << L << std::endl;
+    // std::cout << "position: " << L.position() << ", carry: " << carry << std::endl;
+    if (carry > 0) {
+        // std::cout << "here" << std::endl;
+        L.insertBefore(carry);
+    }
+
+    return sgn;
+}
 
 
 // shiftList()
@@ -282,23 +325,24 @@ void scalarMultList(List& L, ListElement m) {
 }
 
 
-// // add()
-// // Returns a BigInteger representing the sum of this and N.
-// BigInteger BigInteger::add(const BigInteger& N) const {
-//     BigInteger S;
-//     sumList(S, this, N, 1);
-//     normalizeList(S);
-//     return S;
-// }
+// add()
+// Returns a BigInteger representing the sum of this and N.
+BigInteger BigInteger::add(const BigInteger& N) const {
+    BigInteger S;
+    sumList(S.digits, this->digits, N.digits, 1);
+    S.signum = normalizeList(S.digits);
+    // std::cout << this->digits << "    " << N.digits << "    " << S.digits << std::endl;
+    return S;
+}
 
-// // sub()
-// // Returns a BigInteger representing the difference of this and N.
-// BigInteger BigInteger::sub(const BigInteger& N) const {
-//     BigInteger S;
-//     sumList(S, this, N, -1);
-//     normalizeList(S);
-//     return S;
-// }
+// sub()
+// Returns a BigInteger representing the difference of this and N.
+BigInteger BigInteger::sub(const BigInteger& N) const {
+    BigInteger S;
+    sumList(S.digits, this->digits, N.digits, -1);
+    S.signum = normalizeList(S.digits);
+    return S;
+}
 
 // // mult()
 // // Returns a BigInteger representing the product of this and N. 
@@ -312,6 +356,7 @@ void scalarMultList(List& L, ListElement m) {
 // will begin with a negative sign '-'. If this BigInteger is zero, the
 // returned string will consist of the character '0' only.
 std::string BigInteger::to_string() {
+
     std::string s = "";
     if (signum == 0) {
         s += std::to_string(0);
@@ -324,7 +369,7 @@ std::string BigInteger::to_string() {
     for (digits.moveFront(); digits.position() < digits.length(); digits.moveNext()) {
         s += std::to_string(digits.peekNext());
     }
-
+    // std::cout << "digits: " << this->digits << std::endl;
     return s;
 }
 
