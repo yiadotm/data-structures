@@ -41,10 +41,12 @@ int normalizeList(List& L, int base) {
 
         if (subtract < 0) {
             newValue = -1 * old;
-            newValue = ((newValue + carry) % base);
-    
+            // newValue = ((newValue + carry) % base);
+            newValue = ((base + ((subtract) % base)) % base);
+            
             carry = subtract / base;
             // carry = (base + ((subtract) % base)) % base;
+
         }
         else {
             newValue = subtract % base;
