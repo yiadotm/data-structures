@@ -30,6 +30,7 @@ int normalizeList(List& L, int base) {
     if (L.front() < 0) {
         sgn = -1;
         negateList(L);
+        cout << L << endl;
         normalizeList(L, base);
     }
     cout << "here" << endl;
@@ -38,24 +39,23 @@ int normalizeList(List& L, int base) {
         long newValue;
         long subtract = old + carry;
 
-        if (old < 0) {
+        if (subtract < 0) {
             newValue = -1 * old;
             newValue = ((newValue + carry) % base);
     
-            // carry = subtract / base;
-            // carry = (base + (subtract % base)) % base;
+            carry = subtract / base;
+            // carry = (base + ((subtract) % base)) % base;
         }
         else {
             newValue = subtract % base;
-
-            // carry = subtract / base;
+            carry = subtract / base;
             // carry = (base + (subtract % base)) % base;
 
             
         }
 
         L.setBefore(newValue);
-        carry = subtract / base;
+        // carry = subtract / base;
         cout << "old: " << old << ", subtract: " << subtract << ", new: " << newValue << ", carry: " << carry << endl;
     }
     if (carry > 0) {
@@ -112,9 +112,13 @@ int main(){
     LL.insertBefore(23);
     LL.insertBefore(-70);
     LL.insertBefore(-46);
-    S.insertBefore(153);
-    S.insertBefore(112);
-    S.insertBefore(112);
+
+    S.insertBefore(-8);
+    S.insertBefore(1);
+    S.insertBefore(5);
+    S.insertBefore(8);
+    S.insertBefore(0);
+    S.insertBefore(0);
     // S.insertBefore(7);
 
     cout << "L: " << L << endl << endl;
@@ -122,10 +126,10 @@ int main(){
     cout << "S: " << S << endl << endl;
     normalizeList(L, 10);
     normalizeList(LL, 100);
-    normalizeList(S, 100);
+    normalizeList(S, 10);
     cout << "L after normalize: " << L << endl << endl;
     cout << "LL after normalize: " << LL << endl << endl;
     cout << "S after normalize: " << S << endl << endl;
-    cout << "-46 % 100 = " << -46 % 100 << endl << endl;
+    cout << "-46 % 100 = " << (100 + (-46 % 100)) % 100 << endl << endl;
     return 0;
 }
