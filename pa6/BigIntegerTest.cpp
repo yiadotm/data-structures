@@ -165,10 +165,10 @@ int main(){
    //string s4 = "9876545439000000000000000100000000000006543654365346534";
    string s5 = "98765454390000034563456191872363456345619187236000456456345756780000065436543";
    //string s6 = "9876545439000000000000000000000000000006543";
-   string s7 = "123456";
+   string s7 = "-123456";
 
    //BigInteger N;
-   BigInteger A = BigInteger(s7);
+   BigInteger A = BigInteger(s1);
    BigInteger B = BigInteger(s3);
    BigInteger C = BigInteger(s5);
 

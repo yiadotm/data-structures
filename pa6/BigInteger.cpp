@@ -18,7 +18,7 @@
 
 
 int power = 2; 
-long long base = pow(10, power);
+long base = pow(10, power);
 // Class Constructors & Destructors -------------------------------------------
 // BigInteger()
 // Constructor that creates a new BigInteger in the zero state: 
@@ -31,7 +31,8 @@ BigInteger::BigInteger() {
 // BigInteger()
 // Constructor that creates a new BigInteger from the long value x.
 BigInteger::BigInteger(long x) {
-    long long y = x;
+
+    long y = x;
     if (y < 0) {
         
         signum = -1;
@@ -51,6 +52,7 @@ BigInteger::BigInteger(long x) {
                 break;
             }
             long i = y % base;
+
             if (i == 0) {
                 // digits.insertAfter(0);
                 y = (y / base);
@@ -83,6 +85,9 @@ BigInteger::BigInteger(std::string s) {
     if (s.length() == 0) {
         throw std::invalid_argument("BigInteger: Constructor: empty string");
     }
+    if (s.length() == 1 && !isdigit(s[0])) {
+        throw std::invalid_argument("BigInteger: Constructor: not a number");
+    }
 
     // std::cout << "s[0]: " << s[0] << std::endl;
     // std::cout << "s[1]: " << s[1] << std::endl;
@@ -95,34 +100,63 @@ BigInteger::BigInteger(std::string s) {
     // }
     // char* s_temp = new char[s.length() + 1];
     // char* end;
-   
+    signum = 1;
+    int signcheck = 0;
     if (s[0] == '-') {
         signum = -1;
+        signcheck = 1;
        
     }
     if (s[0] == '+') {
         signum = 1;
-        
+        signcheck = 1;
     }    
-    unsigned int stop = s.length() % power;
+    // unsigned int stop = 0;
+    // if (signcheck) {
+    //     stop = 1;
+    // }
     std::string c = "";
-    for (unsigned int i = s.length(); i > stop; i-= power) {
-        if (!isdigit(s[i-1])) {
-            throw std::invalid_argument("BigInteger: Constructor: non-numeric string");
-            break;
+    int left = 0;
+    for (unsigned int i = 1; i < s.length(); i++) {
+            if (!isdigit(s[i])) {
+                throw std::invalid_argument("BigInteger: Constructor: non-numeric string");
+                break;
+            }      
+    }
+    for (unsigned int i = s.length(); i > 1; i-= power) {
+        if (signcheck && i > 0) {
+            if (!isdigit(s[i-1])) {
+                throw std::invalid_argument("BigInteger: Constructor: non-numeric string");
+                break;
+            }
         }
 
         c = s.substr(i - power, power);
-        if ()
-        digits.insertAfter(std::stoi(c));
-        
+        // std::cout << "c: " << c << std::endl;
+
+        if (std::stol(c) == 0) {
+            digits.insertAfter(0);
+
+        }
+        else {
+            digits.insertAfter(std::stol(c));
+
+        }
+        if ((int)(i - power) < power) {
+            left = i - power;
+        }
+
 
         
-
-
-
 
     }
+    // std::cout << "c: " << c << std::endl;
+    if (left > 0) {
+        c = s.substr(signcheck, left);
+        digits.insertAfter(std::stol(c));
+    }
+
+
 
 
     std::cout << std::endl << this->digits << std::endl << std::endl;
@@ -483,7 +517,7 @@ std::string BigInteger::to_string() {
             count++;
         }        
         // std::cout << "here "  << std::endl;
-        if (digits.peekNext() < base && digits.peekNext() != 0) {
+        if (digits.peekNext() < base && digits.peekNext() != 0 && digits.peekNext() != digits.front()) {
             for (int i = (log10(digits.peekNext()) + 1); i < power; i++) {
                 s += "0";
             }
