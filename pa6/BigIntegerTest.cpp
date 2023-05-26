@@ -90,8 +90,8 @@ using namespace std;
 
 // int main(){
 //     BigInteger A;
-//     BigInteger B(7402779357);
-//     BigInteger C("-0041085449");
+//     BigInteger B(123);
+//     BigInteger C("456");
 //     BigInteger D(34556);
 //     cout << "A: 0\nA: " << A << endl;
 //     cout << "Signum of A: " << A.sign() << endl << endl;
@@ -150,7 +150,7 @@ using namespace std;
 //     // normalizeList(L, 100);
 //     // normalizeList(LL, 100);
 //     // normalizeList(S, 10);
-//     cout << "B - C: " << B.sub(C) << endl << endl;
+//     cout << "B * C: " << B*C << endl << endl;
 //     // cout << "L after normalize: " << L << endl << endl;
 //     // cout << "S after normalize: " << S << endl << endl;
 //     // cout << "-71 % 100 = " << (100 + (-71 % 100)) % 100 << endl << endl;
@@ -165,7 +165,8 @@ int main(){
    //string s4 = "9876545439000000000000000100000000000006543654365346534";
    string s5 = "98765454390000034563456191872363456345619187236000456456345756780000065436543";
    //string s6 = "9876545439000000000000000000000000000006543";
-   string s7 = "-123456";
+   string s7 = "123";
+   string s8 = "456";
 
    //BigInteger N;
    BigInteger A = BigInteger(s1);
@@ -182,11 +183,12 @@ int main(){
    BigInteger D = A+B;
    BigInteger E = B+A;
    BigInteger F = D-E;
-//    BigInteger G = 53234*A + 29384747*B + 928374*C;
-//    BigInteger H = A*B;
+   // cout << "here1" << endl;
+   // BigInteger G = 53234*A + 29384747*B + 928374*C;
+   BigInteger H = A*B;
 //    BigInteger I = B*A;
 //    BigInteger J = G*H*I;
-
+   cout << "here" << endl;
    cout << "(A==B) = " << ((A==B)?"True":"False") << endl;
    cout << "(A<B)  = " << ((A<B)? "True":"False") << endl;
    cout << "(A<=B) = " << ((A<=B)?"True":"False") << endl;
@@ -197,8 +199,8 @@ int main(){
    cout << "E = " << E << endl;
    cout << "(D==E) = " << ((D==E)?"True":"False") << endl;
    cout << "F = " << F << endl;
-//    cout << "G = " << G << endl;
-//    cout << "H = " << H << endl;
+   // cout << "G = " << G << endl;
+   cout << "H = " << H << endl;
 //    cout << "I = " << I << endl;
 //    cout << "(H==I) = " << ((H==I)?"True":"False") << endl;
 //    cout << "J = " << J << endl << endl;

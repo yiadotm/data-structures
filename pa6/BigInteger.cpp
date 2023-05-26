@@ -17,7 +17,7 @@
 #include "BigInteger.h"
 
 
-int power = 2; 
+int power = 1; 
 long base = pow(10, power);
 // Class Constructors & Destructors -------------------------------------------
 // BigInteger()
@@ -142,8 +142,10 @@ BigInteger::BigInteger(std::string s) {
             digits.insertAfter(std::stol(c));
 
         }
-        if ((int)(i - power) < power) {
+        // std::cout << "left: " << i - power << std::endl;
+        if ((int)(i - power) <= power) {
             left = i - power;
+            
         }
 
 
@@ -153,6 +155,7 @@ BigInteger::BigInteger(std::string s) {
     // std::cout << "c: " << c << std::endl;
     if (left > 0) {
         c = s.substr(signcheck, left);
+        // std::cout << "c: " << c << std::endl;
         digits.insertAfter(std::stol(c));
     }
 
@@ -307,13 +310,14 @@ void sumList(List& S, List A, List B, int sgn) {
     A.moveBack();
     B.moveBack();
     while (A.position() > 0 && B.position() > 0) {
-        if (A.peekPrev() == 0) {
+        if (A.position() != 1 && A.peekPrev() == 0 && (A.peekPrev() != A.back())) {
             A.movePrev();
         }
-        if (B.peekPrev() == 0) {
+        if (B.position() != 1 && B.peekPrev() == 0 && (B.peekPrev() != B.back())) {
             B.movePrev();
         }
         S.insertAfter(A.peekPrev() + sgn * B.peekPrev());
+        // std::cout << "add: " << A.peekPrev() << " + " << sgn * B.peekPrev() << std::endl;
         A.movePrev();
         B.movePrev();
     }
@@ -429,19 +433,30 @@ void scalarMultList(List& L, ListElement m) {
 BigInteger BigInteger::add(const BigInteger& N) const {
     BigInteger S;
     if (this->signum == -1 && N.signum == 1) {
+        // std::cout << "here1" << std::endl;
         sumList(S.digits, N.digits, this->digits, -1);
     }
     if (this->signum == 1 && N.signum == 1) {
+        // std::cout << "here2" << std::endl;
         sumList(S.digits, this->digits, N.digits, 1);
     }
     if (this->signum == 1 && N.signum == -1) {
+        // std::cout << "here3" << std::endl;
         sumList(S.digits, this->digits, N.digits, -1);
     }
     if (this->signum == -1 && N.signum == -1) {
+        // std::cout << "here4" << std::endl;
         sumList(S.digits, this->digits, N.digits, 1);
     }
+    // std::cout << "this: " << this->digits << std::endl;
+    // std::cout << "this sign: " << this->signum << std::endl;
+    // std::cout << "N: " << N.digits << std::endl;
+    // std::cout << "N sign: " << N.signum << std::endl;
+    // std::cout << "S: " << S.digits << std::endl;
+    if (S.digits.length() != 0) {
+        S.signum = normalizeList(S.digits);
+    }
     
-    S.signum = normalizeList(S.digits);
     // std::cout << this->digits << "    " << N.digits << "    " << S.digits << std::endl;
     return S;
 }
@@ -470,30 +485,66 @@ BigInteger BigInteger::sub(const BigInteger& N) const {
     return S;
 }
 
-// // mult()
-// // Returns a BigInteger representing the product of this and N. 
-// BigInteger BigInteger::mult(const BigInteger& N) const {
-//     BigInteger S;
-//     BigInteger copyN = N;
-//     BigInteger current = *this;
+// mult()
+// Returns a BigInteger representing the product of this and N. 
+BigInteger BigInteger::mult(const BigInteger& N) const {
+    BigInteger S;
+    BigInteger copyN;
+    BigInteger current;
+    copyN.digits = N.digits;
+    copyN.signum = N.signum;
+    current.digits = this->digits;
+    current.signum = this->signum;
+    S.signum = 1;
 
-//     if (this->digits.length() == 0 && N.digits.length() == 0) {
-//         return S;
-//     }
+    if (this->digits.length() == 0 && N.digits.length() == 0) {
+        return S;
+    }
+    int shift = 0;
+    copyN.digits.moveBack();
 
-//     int shift = 0;
-//     copyN.digits.moveBack();
-//     while (copyN.digits.position() > 0) {
-//         current = *this;
-//         shiftList(current.digits, shift);
-//         scalarMultList(current.digits, copyN.digits.movePrev());
-//         S.add(current);
-//         normalizeList(S.digits);
+    while (copyN.digits.position() > 0) {
+        // std::cout << copyN.digits.position() << std::endl;
 
-//     } 
-//     return S;
+        current.digits = this->digits;
+        shiftList(current.digits, shift);
+        // std::cout << "here12" << std::endl;
+        scalarMultList(current.digits, copyN.digits.movePrev());
+        // std::cout << "current after mult: " << current.digits << std::endl;
+        if (S.digits.length() == 0) {
+            // std::cout << "here23" << std::endl;
+            S.digits = current.digits;
+            // std::cout << "here23" << std::endl;
+        }
+        else {
+            // std::cout << S.sign() << std::endl;
+            // std::cout << S.digits << std::endl;
+            // std::cout << current.sign() << std::endl;
+            // std::cout << current.digits << std::endl;
+            S = S.add(current);
+            // std::cout << "here24353" << std::endl;
+        }
+        // std::cout << S.digits.front() << std::endl;
+        normalizeList(S.digits);
+        // std::cout << "S after normalize: " << S.digits << std::endl;
+        shift++;
+        
+    } 
+    if (this->signum == -1 && N.signum == 1) {
+        S.signum = -1;
+    }
+    if (this->signum == 1 && N.signum == -1) {
+        S.signum = -1;
+    }
+    if (this->signum == -1 && N.signum == -1) {
+        S.signum = 1;
+    }
+    if (this->signum == 1 && N.signum == 1) {
+        S.signum = 1;
+    }   
+    return S;
 
-// }
+}
 
 // to_string()
 // Returns a string representation of this BigInteger consisting of its
@@ -530,7 +581,7 @@ std::string BigInteger::to_string() {
     if (count == digits.length()) {
         s = "0";
     }
-    // std::cout << "digits: " << this->digits << std::endl;
+    // std::cout << "digits lengths: " << this->digits.length() << std::endl;
     return s;
 }
 
@@ -615,15 +666,18 @@ BigInteger operator-=( BigInteger& A, const BigInteger& B ) {
     return (A);
 }
 
-// // operator*()
-// // Returns the product A*B. 
-// BigInteger operator*( const BigInteger& A, const BigInteger& B ) {
-//     return (A.BigInteger::mult(B));
-// }
+// operator*()
+// Returns the product A*B. 
+BigInteger operator*( const BigInteger& A, const BigInteger& B ) {
+    // std::cout << "huh " << std::endl;
+    BigInteger S = A.BigInteger::mult(B);
+    // std::cout << "huh 2" << std::endl;
+    return (S);
+}
 
-// // operator*=()
-// // Overwrites A with the product A*B. 
-// BigInteger operator*=( BigInteger& A, const BigInteger& B ) {
-//     A = A.BigInteger::mult(B);
-//     return(A);
-// }
+// operator*=()
+// Overwrites A with the product A*B. 
+BigInteger operator*=( BigInteger& A, const BigInteger& B ) {
+    A = A.BigInteger::mult(B);
+    return(A);
+}
