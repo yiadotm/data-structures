@@ -54,7 +54,7 @@ int main(int argc, char * argv[]){
 
     // outfile << (3*A) - (2*B) << endl << endl;
 
-    // outfile << A * B << endl << endl;
+    outfile << A * B << endl << endl;
 
     // outfile << A * A << endl << endl;
     
