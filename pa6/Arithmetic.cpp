@@ -8,4 +8,62 @@
 * operations and write into base 10 digits (including a negative sign, 
 * if appropriate) to the output file. 
 *********************************************************************************/
+#include<iostream>
+#include<fstream>
+#include<string>
+#include <fstream>
+#include "List.h"
+#include "BigInteger.h"
 
+using namespace std;
+
+int main(int argc, char * argv[]){
+    if( argc != 3 ){
+        cerr << "Usage: " << argv[0] << " <INPUT> <OUTPUT>" << endl;
+        return(EXIT_FAILURE);
+    }
+    long long x = 0;
+    long long a, b = 0;
+    ifstream infile;
+    ofstream outfile;
+    infile.open(argv[1], ios::in);
+    outfile.open(argv[2], ios::out);
+    if (!infile) {
+        cout << "Unable to open file";
+        exit(1); // terminate with error
+    }    
+
+    infile >> x;
+    a = x;
+    infile >> x;
+    infile >> x;
+    b = x;
+    cout << b << endl;
+    BigInteger A(a);
+    BigInteger B(b);
+
+    outfile << A << endl << endl;
+
+    outfile << B << endl << endl;
+
+    outfile << A + B << endl << endl;
+
+    outfile << A - B << endl << endl;
+
+    outfile << A - A << endl << endl;
+
+    // outfile << (3*A) - (2*B) << endl << endl;
+
+    // outfile << A * B << endl << endl;
+
+    // outfile << A * A << endl << endl;
+    
+    // outfile << B * B << endl << endl;
+
+    // outfile << (9 * (A * A * A * A)) + (16 * (B * B * B * B * B)) << endl << endl;
+
+    infile.close();
+    outfile.close();
+    return 0;
+
+}

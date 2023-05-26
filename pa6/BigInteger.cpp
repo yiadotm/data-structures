@@ -16,7 +16,7 @@
 
 
 int power = 2; 
-long base = pow(10, power);
+long long base = pow(10, power);
 // Class Constructors & Destructors -------------------------------------------
 // BigInteger()
 // Constructor that creates a new BigInteger in the zero state: 
@@ -54,11 +54,18 @@ BigInteger::BigInteger(long x) {
                 y = (y / base);
                 continue;
             }
-            std::cout << "i: " << y << " % " << base << " = " << i << std::endl;
+
+            // y = (y / base);
+            // std::cout << "i: " << y << " % " << base << " = " << i << std::endl;
             digits.insertAfter(i);
-            y = (y - i);
+            if (i < base) {
+                for (int j = (log10(i) + 1); j < power; j++) {
+                    digits.insertAfter(0);
+                }
+            }
+            y = (y - i)/base;
             
-            std::cout << "y: " << y << std::endl;
+            // std::cout << "y: " << y << std::endl;
             
         }
     }
@@ -92,7 +99,7 @@ BigInteger::BigInteger(std::string s) {
         }
     }
     strcpy(s_temp, s.c_str());
-    long str = strtoll(s_temp, &end, 10);
+    long long str = strtoll(s_temp, &end, 10);
     BigInteger B = BigInteger(str);
     this->digits = B.digits;
     this->signum = B.signum;
@@ -185,7 +192,7 @@ void BigInteger::negate() {
 // Changes the sign of each integer in List L. Used by sub().
 void negateList(List& L) {
     for (L.moveFront(); L.position() < L.length(); L.moveNext()) {
-        long x = L.peekNext();
+        long long x = L.peekNext();
         L.setAfter(x * -1);
     }
 }
@@ -243,7 +250,7 @@ void sumList(List& S, List A, List B, int sgn) {
 // by add(), sub() and mult().
 int normalizeList(List& L) {
     int sgn = 1;
-    long carry = 0;
+    long long carry = 0;
     if (L.front() < 0) {
         sgn = -1;
         negateList(L);
@@ -252,9 +259,9 @@ int normalizeList(List& L) {
     }
     // cout << "here" << endl;
     for (L.moveBack(); L.position() > 0; L.movePrev()) {
-        long old = L.peekPrev();
-        long newValue;
-        long subtract = old + carry;
+        long long old = L.peekPrev();
+        long long newValue;
+        long long subtract = old + carry;
 
         if (subtract < 0) {
             // newValue = -1 * old;
@@ -356,7 +363,7 @@ BigInteger BigInteger::sub(const BigInteger& N) const {
 // will begin with a negative sign '-'. If this BigInteger is zero, the
 // returned string will consist of the character '0' only.
 std::string BigInteger::to_string() {
-
+    int count = 0;
     std::string s = "";
     if (signum == 0) {
         s += std::to_string(0);
@@ -368,6 +375,12 @@ std::string BigInteger::to_string() {
     }
     for (digits.moveFront(); digits.position() < digits.length(); digits.moveNext()) {
         s += std::to_string(digits.peekNext());
+        if (digits.peekNext() == 0) {
+            count++;
+        }
+    }
+    if (count == digits.length()) {
+        s = "0";
     }
     // std::cout << "digits: " << this->digits << std::endl;
     return s;
@@ -428,31 +441,31 @@ bool operator>=( const BigInteger& A, const BigInteger& B ) {
     return false;
 }
 
-// // operator+()
-// // Returns the sum A+B. 
-// BigInteger operator+( const BigInteger& A, const BigInteger& B ) {
-//     return (A.BigInteger::add(B));
-// }
+// operator+()
+// Returns the sum A+B. 
+BigInteger operator+( const BigInteger& A, const BigInteger& B ) {
+    return (A.BigInteger::add(B));
+}
 
-// // operator+=()
-// // Overwrites A with the sum A+B. 
-// BigInteger operator+=( BigInteger& A, const BigInteger& B ) {
-//     A = A.BigInteger::add(B);
-//     return (A);
-// }
+// operator+=()
+// Overwrites A with the sum A+B. 
+BigInteger operator+=( BigInteger& A, const BigInteger& B ) {
+    A = A.BigInteger::add(B);
+    return (A);
+}
 
-// // operator-()
-// // Returns the difference A-B. 
-// BigInteger operator-( const BigInteger& A, const BigInteger& B ) {
-//     return (A.BigInteger::sub(B));
-// }
+// operator-()
+// Returns the difference A-B. 
+BigInteger operator-( const BigInteger& A, const BigInteger& B ) {
+    return (A.BigInteger::sub(B));
+}
 
-// // operator-=()
-// // Overwrites A with the difference A-B. 
-// BigInteger operator-=( BigInteger& A, const BigInteger& B ) {
-//     A = A.BigInteger::sub(B);
-//     return (A);
-// }
+// operator-=()
+// Overwrites A with the difference A-B. 
+BigInteger operator-=( BigInteger& A, const BigInteger& B ) {
+    A = A.BigInteger::sub(B);
+    return (A);
+}
 
 // // operator*()
 // // Returns the product A*B. 

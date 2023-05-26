@@ -90,14 +90,14 @@ using namespace std;
 
 int main(){
     BigInteger A;
-    BigInteger B(882133);
-    BigInteger C("659179");
+    BigInteger B(7402779357);
+    BigInteger C("-0041085449");
     BigInteger D(34556);
     cout << "A: 0\nA: " << A << endl;
     cout << "Signum of A: " << A.sign() << endl << endl;
-    cout << "B: 882133\nB: " << B << endl;
+    cout << "B: 7402779357\nB: " << B << endl;
     cout << "Signum of B: " << B.sign() << endl << endl;
-    cout << "C: 659179\nC: " << C << endl;
+    cout << "C: -0041085449\nC: " << C << endl;
     cout << "Signum of C: " << C.sign() << endl << endl;
     cout << "D: 34556\nD: " << D << endl;
     cout << "Signum of D: " << D.sign() << endl << endl;
