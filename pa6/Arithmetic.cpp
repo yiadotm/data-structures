@@ -38,7 +38,7 @@ int main(int argc, char * argv[]){
     infile >> x;
     infile >> x;
     b = x;
-    cout << b << endl;
+    // cout << b << endl;
     BigInteger A(a);
     BigInteger B(b);
 

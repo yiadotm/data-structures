@@ -127,12 +127,12 @@ int main(){
     // LL.insertBefore(-70);
     // LL.insertBefore(-46);
 
-    // S.insertBefore(-8);
-    // S.insertBefore(1);
-    // S.insertBefore(5);
-    // S.insertBefore(8);
-    // S.insertBefore(0);
-    // S.insertBefore(0);
+    S.insertBefore(74);
+    S.insertBefore(43);
+    S.insertBefore(69);
+    S.insertBefore(39);
+    S.insertBefore(0);
+    S.insertBefore(8);
     // S.insertBefore(7);
 
     // L.insertBefore(88);
@@ -146,7 +146,7 @@ int main(){
 
     cout << "L: " << L << endl << endl;
     // cout << "LL: " << LL << endl << endl;
-    // cout << "S: " << S << endl << endl;
+    cout << "S: " << S << endl << endl;
     // normalizeList(L, 100);
     // normalizeList(LL, 100);
     // normalizeList(S, 10);

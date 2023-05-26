@@ -11,6 +11,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
+
 #include"List.h"
 #include "BigInteger.h"
 
@@ -58,11 +60,11 @@ BigInteger::BigInteger(long x) {
             // y = (y / base);
             // std::cout << "i: " << y << " % " << base << " = " << i << std::endl;
             digits.insertAfter(i);
-            if (i < base) {
-                for (int j = (log10(i) + 1); j < power; j++) {
-                    digits.insertAfter(0);
-                }
-            }
+            // if (i < base) {
+            //     for (int j = (log10(i) + 1); j < power; j++) {
+            //         digits.insertAfter(0);
+            //     }
+            // }
             y = (y - i)/base;
             
             // std::cout << "y: " << y << std::endl;
@@ -205,6 +207,29 @@ void sumList(List& S, List A, List B, int sgn) {
     // List copyB = B;
     // normalizeList(copyA);
     // normalizeList(copyB);
+    // B.moveFront();
+    // A.moveFront();
+    // if (B.sign() < 0) {
+    //     if (sgn == 1) {
+    //         sgn = -1;
+    //     }
+    //     if (sgn == -1) {
+    //         sgn = 1;
+    //     }
+    //     negateList(B);
+        
+    // }
+    
+    // if (A.front() < 0) {
+    //     if (sgn == 1) {
+    //         sgn = -1;
+    //     }
+    //     if (sgn == -1) {
+    //         sgn = 1;
+    //     }
+    //     negateList(A);
+    // }
+
     S.clear();
     if (A.length() == 0) {
         S = B;
@@ -222,6 +247,12 @@ void sumList(List& S, List A, List B, int sgn) {
     A.moveBack();
     B.moveBack();
     while (A.position() > 0 && B.position() > 0) {
+        if (A.peekPrev() == 0) {
+            A.movePrev();
+        }
+        if (B.peekPrev() == 0) {
+            B.movePrev();
+        }
         S.insertAfter(A.peekPrev() + sgn * B.peekPrev());
         A.movePrev();
         B.movePrev();
@@ -241,7 +272,7 @@ void sumList(List& S, List A, List B, int sgn) {
         }
     }
 
-    // std::cout << S << std::endl;
+    std::cout << S << std::endl;
 }
 
 // normalizeList()
@@ -336,7 +367,19 @@ void scalarMultList(List& L, ListElement m) {
 // Returns a BigInteger representing the sum of this and N.
 BigInteger BigInteger::add(const BigInteger& N) const {
     BigInteger S;
-    sumList(S.digits, this->digits, N.digits, 1);
+    if (this->signum == -1 && N.signum == 1) {
+        sumList(S.digits, N.digits, this->digits, -1);
+    }
+    if (this->signum == 1 && N.signum == 1) {
+        sumList(S.digits, this->digits, N.digits, 1);
+    }
+    if (this->signum == 1 && N.signum == -1) {
+        sumList(S.digits, this->digits, N.digits, -1);
+    }
+    if (this->signum == -1 && N.signum == -1) {
+        sumList(S.digits, this->digits, N.digits, 1);
+    }
+    
     S.signum = normalizeList(S.digits);
     // std::cout << this->digits << "    " << N.digits << "    " << S.digits << std::endl;
     return S;
@@ -374,10 +417,20 @@ std::string BigInteger::to_string() {
         s += "-";
     }
     for (digits.moveFront(); digits.position() < digits.length(); digits.moveNext()) {
-        s += std::to_string(digits.peekNext());
+        
         if (digits.peekNext() == 0) {
             count++;
+        }        
+        // std::cout << "here "  << std::endl;
+        if (digits.peekNext() < base && digits.peekNext() != 0) {
+            for (int i = (log10(digits.peekNext()) + 1); i < power; i++) {
+                s += "0";
+            }
+            
         }
+        // std::cout << "here2 "  << std::endl;
+
+        s += std::to_string(digits.peekNext());
     }
     if (count == digits.length()) {
         s = "0";
