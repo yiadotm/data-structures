@@ -52,15 +52,15 @@ int main(int argc, char * argv[]){
 
     outfile << A - A << endl << endl;
 
-    // outfile << (3*A) - (2*B) << endl << endl;
+    outfile << (3*A) - (2*B) << endl << endl;
 
     outfile << A * B << endl << endl;
 
-    // outfile << A * A << endl << endl;
+    outfile << A * A << endl << endl;
     
-    // outfile << B * B << endl << endl;
+    outfile << B * B << endl << endl;
 
-    // outfile << (9 * (A * A * A * A)) + (16 * (B * B * B * B * B)) << endl << endl;
+    outfile << (9 * (A * A * A * A)) + (16 * (B * B * B * B * B)) << endl << endl;
 
     infile.close();
     outfile.close();
