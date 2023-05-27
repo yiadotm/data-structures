@@ -162,7 +162,7 @@ BigInteger::BigInteger(std::string s) {
 
 
 
-    std::cout << std::endl << this->digits << std::endl << std::endl;
+    // std::cout << std::endl << this->digits << std::endl << std::endl;
     // strcpy(s_temp, s.c_str());
     // long long str = strtoll(s_temp, &end, 10);
     // BigInteger B = BigInteger(str);
@@ -310,6 +310,12 @@ void sumList(List& S, List A, List B, int sgn) {
     A.moveBack();
     B.moveBack();
     while (A.position() > 0 && B.position() > 0) {
+        if (A.position() != 1 && B.position() != 1 && A.peekPrev() == 0 && B.peekPrev() == 0) {
+            S.insertAfter(0);
+            A.movePrev();
+            B.movePrev();
+
+        }
         if (A.position() != 1 && A.peekPrev() == 0 && (A.peekPrev() != A.back())) {
             A.movePrev();
         }
@@ -345,7 +351,7 @@ void sumList(List& S, List A, List B, int sgn) {
 // by add(), sub() and mult().
 int normalizeList(List& L) {
     int sgn = 1;
-    long long carry = 0;
+    long carry = 0;
     // std::cout << sgn << std::endl;
     if (L.front() < 0) {
         sgn = -1;
@@ -355,9 +361,9 @@ int normalizeList(List& L) {
     }
     // cout << "here" << endl;
     for (L.moveBack(); L.position() > 0; L.movePrev()) {
-        long long old = L.peekPrev();
-        long long newValue;
-        long long subtract = old + carry;
+        long old = L.peekPrev();
+        long newValue;
+        long subtract = old + carry;
 
         if (subtract < 0) {
             // newValue = -1 * old;
@@ -493,6 +499,7 @@ BigInteger BigInteger::mult(const BigInteger& N) const {
     BigInteger current;
     copyN.digits = N.digits;
     copyN.signum = N.signum;
+    // std::cout << "N sign: " << N.signum << std::endl;
     current.digits = this->digits;
     current.signum = this->signum;
     S.signum = 1;
@@ -530,6 +537,8 @@ BigInteger BigInteger::mult(const BigInteger& N) const {
         shift++;
         
     } 
+    // std::cout << "this sign: " << this->signum << std::endl;
+    // std::cout << "N sign: " << N.signum << std::endl;
     if (this->signum == -1 && N.signum == 1) {
         S.signum = -1;
     }
