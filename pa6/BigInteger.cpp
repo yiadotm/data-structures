@@ -322,12 +322,13 @@ void sumList(List& S, List A, List B, int sgn) {
             S.insertAfter(0);
             A.movePrev();
             B.movePrev();
+            
 
         }
-        if (A.position() != 1 && A.peekPrev() == 0 && (A.peekPrev() != A.back())) {
+        else if (A.position() != 1 && A.peekPrev() == 0 && (A.peekPrev() != A.back())) {
             A.movePrev();
         }
-        if (B.position() != 1 && B.peekPrev() == 0 && (B.peekPrev() != B.back())) {
+        else if (B.position() != 1 && B.peekPrev() == 0 && (B.peekPrev() != B.back())) {
             B.movePrev();
         }
         // if ((A.peekPrev() + sgn * B.peekPrev()) != 0) {
@@ -337,15 +338,17 @@ void sumList(List& S, List A, List B, int sgn) {
         A.movePrev();
         B.movePrev();
     }
+    // std::cout << "A.pos: " << A.position() << std::endl;
+    // std::cout << "B.pos: " << B.position() << std::endl;
 
-    if (A.position() != 0) {
+    if (A.position() > 0) {
         while (A.position() > 0) {
             S.insertAfter(A.peekPrev());
             A.movePrev();
         }
     }
 
-    if (B.position() != 0) {
+    if (B.position() > 0) {
         while (B.position() > 0) {
             S.insertAfter(sgn * B.peekPrev());
             B.movePrev();
