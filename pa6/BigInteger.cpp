@@ -341,14 +341,14 @@ void sumList(List& S, List A, List B, int sgn) {
     // std::cout << "A.pos: " << A.position() << std::endl;
     // std::cout << "B.pos: " << B.position() << std::endl;
 
-    if (A.position() > 0) {
+    if (A.position() != 0) {
         while (A.position() > 0) {
             S.insertAfter(A.peekPrev());
             A.movePrev();
         }
     }
 
-    if (B.position() > 0) {
+    if (B.position() != 0) {
         while (B.position() > 0) {
             S.insertAfter(sgn * B.peekPrev());
             B.movePrev();
@@ -474,9 +474,9 @@ BigInteger BigInteger::add(const BigInteger& N) const {
     // std::cout << "N: " << N.digits << std::endl;
     // std::cout << "N sign: " << N.signum << std::endl;
     // std::cout << "S: " << S.digits << std::endl;
-    if (S.digits.length() != 0) {
+    // if (S.digits.length() != 0) {
         S.signum = normalizeList(S.digits);
-    }
+    // }
     // std::cout << "S: sign: " << S.signum << std::endl;
     if (this->signum == -1 && N.signum == -1) {
         // std::cout << "here4" << std::endl;
@@ -623,6 +623,9 @@ std::string BigInteger::to_string() {
             //     }
             //     break;
             // }
+            if (digits.position() == 1) {
+                break;
+            }
             count++;
         }        
 
@@ -739,7 +742,6 @@ BigInteger operator+=( BigInteger& A, const BigInteger& B ) {
 // operator-()
 // Returns the difference A-B. 
 BigInteger operator-( const BigInteger& A, const BigInteger& B ) {
-
     return (A.BigInteger::sub(B));
 }
 
