@@ -166,7 +166,10 @@ BigInteger::BigInteger(std::string s) {
 
 
 
-
+    while (digits.front() == 0) {
+        digits.moveFront();
+        digits.eraseAfter();
+    }
     // std::cout << std::endl << this->digits << std::endl << std::endl;
     // strcpy(s_temp, s.c_str());
     // long long str = strtoll(s_temp, &end, 10);
@@ -536,15 +539,15 @@ BigInteger BigInteger::mult(const BigInteger& N) const {
     copyN = N.digits;
     // std::cout << "N sign: " << N.signum << std::endl;
     current = this->digits;
-    S.signum = 1;
+    
 
-    if (this->digits.length() == 0 && N.digits.length() == 0) {
+    if (this->sign() == 0 || N.sign() == 0) {
         S.signum = 0;
         return S;
     }
     int shift = 0;
     copyN.moveBack();
-
+    S.signum = 1;
     while (copyN.position() > 0) {
         // std::cout << copyN.digits.position() << std::endl;
 
@@ -589,6 +592,7 @@ BigInteger BigInteger::mult(const BigInteger& N) const {
     if (this->signum == 1 && N.signum == 1) {
         S.signum = 1;
     }   
+
     return S;
 
 }
@@ -628,7 +632,7 @@ std::string BigInteger::to_string() {
             
         // }
         // std::cout << "here2 "  << std::endl;
-        std::string b =  std::to_string(digits.peekPrev());
+        std::string b = std::to_string(digits.peekPrev());
 
         int len = b.length();
         // std::cout << " prev: " << digits.peekPrev() << std::endl;
@@ -640,6 +644,9 @@ std::string BigInteger::to_string() {
         //     break;
         // }
         if (digits.position() > 1) {
+            // std::cout << "position: " << digits.position() << std::endl;
+            // std::cout << "digits: " << digits << std::endl;
+
             // std::cout << " len: " << len << std::endl;
             for (int i = 0; i < power - len; i++) {
                 s = "0" + s;
@@ -729,6 +736,7 @@ BigInteger operator+=( BigInteger& A, const BigInteger& B ) {
 // operator-()
 // Returns the difference A-B. 
 BigInteger operator-( const BigInteger& A, const BigInteger& B ) {
+
     return (A.BigInteger::sub(B));
 }
 
