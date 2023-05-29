@@ -17,7 +17,7 @@
 #include "BigInteger.h"
 
 
-int power = 1; 
+int power = 9; 
 long base = pow(10, power);
 // Class Constructors & Destructors -------------------------------------------
 // BigInteger()
@@ -111,19 +111,26 @@ BigInteger::BigInteger(std::string s) {
         signum = 1;
         signcheck = 1;
     }    
-    // unsigned int stop = 0;
-    // if (signcheck) {
-    //     stop = 1;
-    // }
+    unsigned int stop = s.length() % power;
+
+    unsigned int neg = 0;
+    if (signcheck) {
+        neg = 1;
+        stop = (s.length()-1) % power;
+
+        
+    }
     std::string c = "";
-    int left = 0;
-    for (unsigned int i = 1; i < s.length(); i++) {
+    // int left = 0;
+    for (unsigned int i = neg; i < s.length(); i++) {
             if (!isdigit(s[i])) {
                 throw std::invalid_argument("BigInteger: Constructor: non-numeric string");
                 break;
             }      
     }
-    for (unsigned int i = s.length(); i > 1; i-= power) {
+
+    std::string::size_type z;
+    for (unsigned int i = s.length(); i > stop + 1; i-= power) {
         if (signcheck && i > 0) {
             if (!isdigit(s[i-1])) {
                 throw std::invalid_argument("BigInteger: Constructor: non-numeric string");
@@ -131,38 +138,39 @@ BigInteger::BigInteger(std::string s) {
             }
         }
 
+
         c = s.substr(i - power, power);
         // std::cout << "c: " << c << std::endl;
 
-        if (std::stol(c) == 0) {
+        if (std::stol(c, &z) == 0) {
             digits.insertAfter(0);
 
         }
         else {
-            digits.insertAfter(std::stol(c));
+            digits.insertAfter(std::stol(c, &z));
 
         }
         // std::cout << "left: " << i - power << std::endl;
-        if ((int)(i - power) <= power) {
-            left = i - power;
-            
-        }
+
 
 
         
 
     }
     // std::cout << "c: " << c << std::endl;
-    if (left > 0) {
-        c = s.substr(signcheck, left);
+    if (s.substr(signcheck, stop) != "") {
+        c = s.substr(signcheck, stop);
         // std::cout << "c: " << c << std::endl;
-        digits.insertAfter(std::stol(c));
+        digits.insertAfter(std::stol(c, &z));
     }
 
 
 
-
-    std::cout << std::endl << this->digits << std::endl << std::endl;
+    while (digits.front() == 0) {
+        digits.moveFront();
+        digits.eraseAfter();
+    }
+    // std::cout << std::endl << this->digits << std::endl << std::endl;
     // strcpy(s_temp, s.c_str());
     // long long str = strtoll(s_temp, &end, 10);
     // BigInteger B = BigInteger(str);
@@ -310,17 +318,28 @@ void sumList(List& S, List A, List B, int sgn) {
     A.moveBack();
     B.moveBack();
     while (A.position() > 0 && B.position() > 0) {
-        if (A.position() != 1 && A.peekPrev() == 0 && (A.peekPrev() != A.back())) {
+        if (A.position() != 1 && B.position() != 1 && A.peekPrev() == 0 && B.peekPrev() == 0) {
+            S.insertAfter(0);
+            A.movePrev();
+            B.movePrev();
+            
+
+        }
+        else if (A.position() != 1 && A.peekPrev() == 0 && (A.peekPrev() != A.back())) {
             A.movePrev();
         }
-        if (B.position() != 1 && B.peekPrev() == 0 && (B.peekPrev() != B.back())) {
+        else if (B.position() != 1 && B.peekPrev() == 0 && (B.peekPrev() != B.back())) {
             B.movePrev();
         }
-        S.insertAfter(A.peekPrev() + sgn * B.peekPrev());
+        // if ((A.peekPrev() + sgn * B.peekPrev()) != 0) {
+            S.insertAfter(A.peekPrev() + sgn * B.peekPrev());
+        // }
         // std::cout << "add: " << A.peekPrev() << " + " << sgn * B.peekPrev() << std::endl;
         A.movePrev();
         B.movePrev();
     }
+    // std::cout << "A.pos: " << A.position() << std::endl;
+    // std::cout << "B.pos: " << B.position() << std::endl;
 
     if (A.position() != 0) {
         while (A.position() > 0) {
@@ -345,7 +364,7 @@ void sumList(List& S, List A, List B, int sgn) {
 // by add(), sub() and mult().
 int normalizeList(List& L) {
     int sgn = 1;
-    long long carry = 0;
+    long carry = 0;
     // std::cout << sgn << std::endl;
     if (L.front() < 0) {
         sgn = -1;
@@ -353,11 +372,12 @@ int normalizeList(List& L) {
         // cout << L << endl;
         normalizeList(L);
     }
-    // cout << "here" << endl;
+
+    // std::cout << L << std::endl << std::endl;
     for (L.moveBack(); L.position() > 0; L.movePrev()) {
-        long long old = L.peekPrev();
-        long long newValue;
-        long long subtract = old + carry;
+        long old = L.peekPrev();
+        long newValue;
+        long subtract = old + carry;
 
         if (subtract < 0) {
             // newValue = -1 * old;
@@ -447,14 +467,32 @@ BigInteger BigInteger::add(const BigInteger& N) const {
     if (this->signum == -1 && N.signum == -1) {
         // std::cout << "here4" << std::endl;
         sumList(S.digits, this->digits, N.digits, 1);
+        S.signum = -1;
     }
     // std::cout << "this: " << this->digits << std::endl;
     // std::cout << "this sign: " << this->signum << std::endl;
     // std::cout << "N: " << N.digits << std::endl;
     // std::cout << "N sign: " << N.signum << std::endl;
     // std::cout << "S: " << S.digits << std::endl;
-    if (S.digits.length() != 0) {
+    // if (S.digits.length() != 0) {
         S.signum = normalizeList(S.digits);
+    // }
+    // std::cout << "S: sign: " << S.signum << std::endl;
+    if (this->signum == -1 && N.signum == -1) {
+        // std::cout << "here4" << std::endl;
+        S.signum = -1;
+    }
+    if (S.digits.length() == 0) {
+        S.signum = 0;
+    }
+    int count = 0;
+    for (S.digits.moveFront(); S.digits.position() < S.digits.length(); S.digits.moveNext()) {
+        if (S.digits.peekNext() == 0) {
+            count++;
+        }
+    }
+    if (count == S.digits.length()) {
+        S.signum = 0;
     }
     
     // std::cout << this->digits << "    " << N.digits << "    " << S.digits << std::endl;
@@ -481,6 +519,15 @@ BigInteger BigInteger::sub(const BigInteger& N) const {
     // std::cout << S.signum << std::endl;
 
     S.signum = normalizeList(S.digits);
+    int count = 0;
+    for (S.digits.moveFront(); S.digits.position() < S.digits.length(); S.digits.moveNext()) {
+        if (S.digits.peekNext() == 0) {
+            count++;
+        }
+    }
+    if (count == S.digits.length()) {
+        S.signum = 0;
+    }
     // std::cout << S.digits << std::endl;
     return S;
 }
@@ -489,47 +536,53 @@ BigInteger BigInteger::sub(const BigInteger& N) const {
 // Returns a BigInteger representing the product of this and N. 
 BigInteger BigInteger::mult(const BigInteger& N) const {
     BigInteger S;
-    BigInteger copyN;
-    BigInteger current;
-    copyN.digits = N.digits;
-    copyN.signum = N.signum;
-    current.digits = this->digits;
-    current.signum = this->signum;
-    S.signum = 1;
+    List copyN;
+    List current;
+    List copyS;
+    copyN = N.digits;
+    // std::cout << "N sign: " << N.signum << std::endl;
+    current = this->digits;
+    
 
-    if (this->digits.length() == 0 && N.digits.length() == 0) {
+    if (this->sign() == 0 || N.sign() == 0) {
+        S.signum = 0;
         return S;
     }
     int shift = 0;
-    copyN.digits.moveBack();
-
-    while (copyN.digits.position() > 0) {
+    copyN.moveBack();
+    S.signum = 1;
+    while (copyN.position() > 0) {
         // std::cout << copyN.digits.position() << std::endl;
 
-        current.digits = this->digits;
-        shiftList(current.digits, shift);
+        current = this->digits;
+        
         // std::cout << "here12" << std::endl;
-        scalarMultList(current.digits, copyN.digits.movePrev());
-        // std::cout << "current after mult: " << current.digits << std::endl;
-        if (S.digits.length() == 0) {
-            // std::cout << "here23" << std::endl;
-            S.digits = current.digits;
-            // std::cout << "here23" << std::endl;
-        }
-        else {
+        scalarMultList(current, copyN.movePrev());
+        shiftList(current, shift);
+        // std::cout << "current after mult: " << current << std::endl;
+        // if (S.digits.length() == 0) {
+        //     // std::cout << "here23" << std::endl;
+        //     S.digits = current.digits;
+        //     // std::cout << "here23" << std::endl;
+        // }
+        // else {
             // std::cout << S.sign() << std::endl;
             // std::cout << S.digits << std::endl;
             // std::cout << current.sign() << std::endl;
             // std::cout << current.digits << std::endl;
-            S = S.add(current);
+            // S = S.add(current);
+            sumList(copyS, copyS, current, 1);
             // std::cout << "here24353" << std::endl;
-        }
+        // }
         // std::cout << S.digits.front() << std::endl;
-        normalizeList(S.digits);
-        // std::cout << "S after normalize: " << S.digits << std::endl;
+        normalizeList(copyS);
+        // std::cout << "S after normalize: " << copyS << std::endl;
         shift++;
         
     } 
+    S.digits = copyS;
+    // std::cout << "this sign: " << this->signum << std::endl;
+    // std::cout << "N sign: " << N.signum << std::endl;
     if (this->signum == -1 && N.signum == 1) {
         S.signum = -1;
     }
@@ -542,6 +595,7 @@ BigInteger BigInteger::mult(const BigInteger& N) const {
     if (this->signum == 1 && N.signum == 1) {
         S.signum = 1;
     }   
+
     return S;
 
 }
@@ -559,28 +613,60 @@ std::string BigInteger::to_string() {
         return s;
     }
 
-    if (signum == -1) {
-        s += "-";
-    }
-    for (digits.moveFront(); digits.position() < digits.length(); digits.moveNext()) {
+
+    for (digits.moveBack(); digits.position() > 0; digits.movePrev()) {
         
-        if (digits.peekNext() == 0) {
+        if (digits.peekPrev() == 0) {
+            // if (digits.position() == (digits.length()-1)) {
+            //     for (int i = 0; i < power; i++) {
+            //         s+= "0";
+            //     }
+            //     break;
+            // }
+            if (digits.position() == 1) {
+                break;
+            }
             count++;
         }        
-        // std::cout << "here "  << std::endl;
-        if (digits.peekNext() < base && digits.peekNext() != 0 && digits.peekNext() != digits.front()) {
-            for (int i = (log10(digits.peekNext()) + 1); i < power; i++) {
-                s += "0";
-            }
-            
-        }
-        // std::cout << "here2 "  << std::endl;
 
-        s += std::to_string(digits.peekNext());
+        // std::cout << "here "  << std::endl;
+        // if (digits.peekPrev() < base && digits.peekPrev() != 0 && digits.peekPrev() != digits.front()) {
+        //     // std::cout << (log_a_to_base_b(digits.peekNext(), base) + 1) << std::endl;
+        //     for (int i = (log10(digits.peekNext()) + 1); i < power; i++) {
+        //         s = "0" + s;
+        //     }
+            
+        // }
+        // std::cout << "here2 "  << std::endl;
+        std::string b = std::to_string(digits.peekPrev());
+
+        int len = b.length();
+        // std::cout << " prev: " << digits.peekPrev() << std::endl;
+        s = std::to_string(digits.peekPrev()) + s;
+        // if (len < power && digits.length() == 1) {
+        //     for (int i = 0; i < power - len; i++) {
+        //         s += "0";
+        //     }
+        //     break;
+        // }
+        if (digits.position() > 1) {
+            // std::cout << "position: " << digits.position() << std::endl;
+            // std::cout << "digits: " << digits << std::endl;
+
+            // std::cout << " len: " << len << std::endl;
+            for (int i = 0; i < power - len; i++) {
+                s = "0" + s;
+            }
+        }
     }
     if (count == digits.length()) {
         s = "0";
     }
+
+    if (signum == -1) {
+        s = "-" + s;
+    }
+    
     // std::cout << "digits lengths: " << this->digits.length() << std::endl;
     return s;
 }

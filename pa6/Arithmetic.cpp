@@ -22,8 +22,8 @@ int main(int argc, char * argv[]){
         cerr << "Usage: " << argv[0] << " <INPUT> <OUTPUT>" << endl;
         return(EXIT_FAILURE);
     }
-    long long x = 0;
-    long long a, b = 0;
+    string x;
+    string a, b;
     ifstream infile;
     ofstream outfile;
     infile.open(argv[1], ios::in);
@@ -38,7 +38,9 @@ int main(int argc, char * argv[]){
     infile >> x;
     infile >> x;
     b = x;
-    // cout << b << endl;
+    cout << a << endl;
+
+    cout << b << endl;
     BigInteger A(a);
     BigInteger B(b);
 
@@ -52,15 +54,15 @@ int main(int argc, char * argv[]){
 
     outfile << A - A << endl << endl;
 
-    // outfile << (3*A) - (2*B) << endl << endl;
+    outfile << (BigInteger(3)*A) - (BigInteger(2)*B) << endl << endl;
 
     outfile << A * B << endl << endl;
 
-    // outfile << A * A << endl << endl;
+    outfile << A * A << endl << endl;
     
-    // outfile << B * B << endl << endl;
+    outfile << B * B << endl << endl;
 
-    // outfile << (9 * (A * A * A * A)) + (16 * (B * B * B * B * B)) << endl << endl;
+    outfile << (BigInteger(9) * (A * A * A * A)) + (BigInteger(16) * (B * B * B * B * B)) << endl << endl;
 
     infile.close();
     outfile.close();
