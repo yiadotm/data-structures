@@ -152,8 +152,8 @@ Dictionary::Node* Dictionary::findPrev(Node* N) {
 // Creates new Dictionary in the empty state.
 Dictionary::Dictionary() {
     nil = new Node(0, 0);
-    root = nil->parent;
-    current = root;
+    root = nil;
+    current = nil;
     num_pairs = 0;
 }
 
@@ -203,7 +203,75 @@ bool Dictionary::contains(keyType k) const {
     
 }
 
+// getValue()
+// Returns a reference to the value corresponding to key k.
+// Pre: contains(k)
+valType& Dictionary::getValue(keyType k) const {
+    Node* N = search(this->root, k);
+    if (N == nil) {
+        throw std::logic_error("Dictionary: getValue: key does not exist");
+    }
+    return (N->val);
+}
 
+// hasCurrent()
+// Returns true if the current iterator is defined, and returns false 
+// otherwise.
+bool Dictionary::hasCurrent() const {
+    if (current == nil) {
+        return false;
+    }
+    return true;
+}
+
+// currentKey()
+// Returns the current key.
+// Pre: hasCurrent() 
+keyType Dictionary::currentKey() const {
+    if (hasCurrent() == false) {
+        throw std::logic_error("Dictionary: currentKey: current is not defined");
+    }
+    return (current->key);
+}
+
+// currentVal()
+// Returns a reference to the current value.
+// Pre: hasCurrent()
+valType& Dictionary::currentVal() const {
+    if (hasCurrent() == false) {
+        throw std::logic_error("Dictionary: currentVal: current is not defined");
+    }
+    return (current->val);
+}
+
+// Manipulation procedures -------------------------------------------------
+
+// clear()
+// Resets this Dictionary to the empty state, containing no pairs.
+void Dictionary::clear() {
+    postOrderDelete(this->root);
+    num_pairs = 0;
+    current = nil;
+    root = nil;
+}
+
+
+
+// setValue()
+// If a pair with key==k exists, overwrites the corresponding value with v, 
+// otherwise inserts the new pair (k, v).
+void Dictionary::setValue(keyType k, valType v) {
+    Node* N = search(root, k);
+    if (N != nil) {
+        N->val = v;
+        return;
+    }
+    while (N == nil) {
+
+    }
+    N->val = v;
+
+}
 
 
 
