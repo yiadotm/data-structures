@@ -45,7 +45,7 @@ void Dictionary::inOrderString(std::string& s, Node* R) const {
 // by a pre-order tree walk.
 void Dictionary::preOrderString(std::string& s, Node* R) const {
     while (R != nil) {
-        s += R->key + ": " + std::to_string(R->val) + " \n";
+        s += R->key + ": " +  " \n";
         Dictionary::inOrderString(s, R->left);
         Dictionary::inOrderString(s, R->right);
 
@@ -92,15 +92,15 @@ void Dictionary::postOrderDelete(Node* R) {
 // Searches the subtree rooted at R for a Node with key==k. Returns
 // the address of the Node if it exists, returns nil otherwise.
 Dictionary::Node* Dictionary::search(Node* R, keyType k) const {
-    Node* N = R;
-    while (N != nil) {
-        if (N->key == k) {
-            return N;
-        }
-        search(N->left, k);
-        search(N->right, k);
+    if (R == nil || k == R->key) {
+        return R;
     }
-    return nil;
+    else if (k < R->key) {
+        return search(R->left, k);
+    }
+    else {
+        return search(R->right, k);
+    }
 }
 
 
@@ -108,33 +108,50 @@ Dictionary::Node* Dictionary::search(Node* R, keyType k) const {
 // If the subtree rooted at R is not empty, returns a pointer to the 
 // leftmost Node in that subtree, otherwise returns nil.
 Dictionary::Node* Dictionary::findMin(Node* R) {
-    while (R != nil) {
-        findMin(R->left);
-        return R;
+    if (R == nil) {
+        return nil;
     }
-    return (nil);
+    while (R->left != nil) {
+        R = R->left;
+    }
+    return (R);
 }
 
 // findMax()
 // If the subtree rooted at R is not empty, returns a pointer to the 
 // rightmost Node in that subtree, otherwise returns nil.
 Dictionary::Node* Dictionary::findMax(Node* R) {
-    while (R != nil) {
-        findMin(R->right);
-        return R;
+    if (R == nil) {
+        return nil;
     }
-    return (nil);    
+    while (R->right != nil) {
+        R = R->right;
+    }
+    return (R);   
 }
+
+
 
 // findNext()
 // If N does not point to the rightmost Node, returns a pointer to the
 // Node after N in an in-order tree walk.  If N points to the rightmost 
 // Node, or is nil, returns nil. 
 Dictionary::Node* Dictionary::findNext(Node* N) {
-    if (N->right == nil || N == nil) {
-        return (nil);
+    if (N == findMax(root) || N == nil) {
+        return nil;
     }
-    return (N->right);
+    if (N->right != nil) {
+        return findMin(N->right);
+    }
+    Node* y = N->parent;
+    while (y != nil && N == y->right) {
+        N == y;
+        y = y->parent;
+    }
+
+    return y;
+
+
 }
 
 // findPrev()
@@ -142,10 +159,18 @@ Dictionary::Node* Dictionary::findNext(Node* N) {
 // Node before N in an in-order tree walk.  If N points to the leftmost 
 // Node, or is nil, returns nil.
 Dictionary::Node* Dictionary::findPrev(Node* N) {
-    if (N->left == nil || N == nil) {
+    if (N == findMax(root) || N == nil) {
         return nil;
     }
-    return (N->left);
+    if (N->left != nil) {
+        return findMax(N->left);
+    }
+    Node* y = N->parent;
+    while (y != nil && N == y->left) {
+        N = y;
+        y = y->parent;
+    }
+    return y;
 }
 
 // Class Constructors & Destructors ----------------------------------------
@@ -266,12 +291,88 @@ void Dictionary::setValue(keyType k, valType v) {
         N->val = v;
         return;
     }
-    while (N == nil) {
 
+    Node* y = nil;
+    Node* x = root;
+    Node* z = new Node(k, v);
+    while (x != nil) {
+        y = x;
+        if (z->key < x->key) {
+            x = x->left;
+        }
+        else {
+            x = x->right;
+        }
     }
-    N->val = v;
+    z->parent = y;
+    if (y == nil) {
+        root = z;
+    }
+    else if (z->key < y->key) {
+        y->left = z;
+    }
+    else {
+        y->right = z;
+    }
+
+    num_pairs++;
 
 }
 
+// Transplant()
+// Replaces node u with node v and relinks all the nodes.
+void Dictionary::Transplant(Node* u, Node* v) {
+    if (u->parent == nil) {
+        root = v;
+    }
+    else if (u == u->parent->left) {
+        u->parent->left = v;
+    }
+    else {
+        u->parent->right = v;
+    }
+    if (v != nil) {
+        v->parent = u->parent;
+    }
+}
 
+// remove()
+// Deletes the pair for which key==k. If that pair is current, then current
+// becomes undefined.
+// Pre: contains(k).
+void Dictionary::remove(keyType k) {
+    Node* z = search(root, k);
+    if (z == current) {
+        current = nil;
+    }
+
+    if (z->left == nil) {
+        Transplant(z, z->right);
+    }
+    else if (z->right == nil) {
+        Transplant(z, z->left);
+    }
+    else {
+        Node* y = findMin(z->right);
+        if (y->parent != z) {
+            Transplant(y, y->right);
+            y->right = z->right;
+            y->right->parent = y;
+        }
+        Transplant(z, y);
+        y->left = z->left;
+        y->left->parent = y;
+    }
+    num_pairs--;
+}
+
+
+// begin()
+// If non-empty, places current iterator at the first (key, value) pair
+// (as defined by the order operator < on keys), otherwise does nothing. 
+void Dictionary::begin() {
+    if (num_pairs != 0) {
+        
+    }
+}
 

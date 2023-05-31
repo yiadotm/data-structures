@@ -93,6 +93,10 @@ private:
    // Node, or is nil, returns nil.
    Node* findPrev(Node* N);
 
+   // Transplant()
+   // Replaces node u with node v and relinks all the nodes.
+   void Transplant(Node* u, Node* v);
+
 public:
 
    // Class Constructors & Destructors ----------------------------------------
