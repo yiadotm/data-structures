@@ -35,8 +35,7 @@ void Dictionary::inOrderString(std::string& s, Node* R) const {
         // std::cout  << "key: " << R->key << " val: " << R->val << std::endl;
 
         Dictionary::inOrderString(s, R->left);
-        // std::cout  << "key: " << R->key << "val: " << R->val << std::endl;
-        s += R->key + " : " + std::to_string(R->val) + " \n";
+        s += R->key + " : " + std::to_string(R->val) + "\n";
         // std::cout << s << std::endl;
         Dictionary::inOrderString(s, R->right);
     }
@@ -49,7 +48,7 @@ void Dictionary::inOrderString(std::string& s, Node* R) const {
 // by a pre-order tree walk.
 void Dictionary::preOrderString(std::string& s, Node* R) const {
     if (R != nil) {
-        s += R->key +  " \n";
+        s += R->key +  "\n";
         Dictionary::preOrderString(s, R->left);
         Dictionary::preOrderString(s, R->right);
 
@@ -62,6 +61,7 @@ void Dictionary::preOrderString(std::string& s, Node* R) const {
 // Dictionary. Recursion terminates at N.
 void Dictionary::preOrderCopy(Node* R, Node* N) {
     if (R != N) {
+
         setValue(R->key, R->val);
         preOrderCopy(R->left, N);
         preOrderCopy(R->right, N);
@@ -76,8 +76,8 @@ void Dictionary::postOrderDelete(Node* R) {
         postOrderDelete(R->left);
         postOrderDelete(R->right);
         Node* N = R;
-        N->parent = nil->parent;
-        N->parent->right = nil->right;
+        N->parent = nil;
+        N->parent->right = nil;
         delete N;
 
     }
@@ -111,12 +111,12 @@ Dictionary::Node* Dictionary::findMin(Node* R) {
     if (num_pairs == 0) {
         return nil;
     }
-    // if (R == nil) {
-    //     return nil;
-    // }
-    while (R->left != nil) {
-        R = R->left;
+    if (R != nil) {
+        while (R->left != nil) {
+            R = R->left;
+        }
     }
+
     return (R);
 }
 
@@ -127,12 +127,12 @@ Dictionary::Node* Dictionary::findMax(Node* R) {
     if (num_pairs == 0) {
         return nil;
     }
-    // if (R == nil) {
-    //     return nil;
-    // }
-    while (R->right != nil) {
-        R = R->right;
+    if (R != nil) {
+        while (R->right != nil) {
+            R = R->right;
+        }       
     }
+
     return (R);   
 }
 
@@ -182,7 +182,8 @@ Dictionary::Node* Dictionary::findPrev(Node* N) {
 // Class Constructors & Destructors ----------------------------------------
 // Creates new Dictionary in the empty state.
 Dictionary::Dictionary() {
-    nil = new Node("a", 0);
+    // std::cout << "default constructor\n";
+    nil = new Node("", 0);
     root = nil;
     root->parent = nil;
     root->left = nil;
@@ -195,12 +196,20 @@ Dictionary::Dictionary() {
 
 // Copy constructor.
 Dictionary::Dictionary(const Dictionary& D) {
-    Node* N = new Node(D.root->key, D.root->val);
-    this->nil = D.nil;
-    this->root = N;
+    // std::cout << "not default constructor\n";
+    this->nil = new Node("", 0);
+    if (D.root == D.nil) {
+        this->root = this->nil;
+    }
+    else {
+        Node* N = new Node(D.root->key, D.root->val);
+        this->root = N;
+
+    }
     this->root->parent = nil;
     this->root->left = nil;
     this->root->right = nil;
+
     // std::cout << "huh13" << std::endl;
     preOrderCopy(D.root, D.nil);
     // std::cout << "huh14" << std::endl;
@@ -217,8 +226,10 @@ Dictionary::Dictionary(const Dictionary& D) {
 Dictionary::~Dictionary() {
     postOrderDelete(root);
     current = nullptr;
+    Node* N = nil;
     nil = nullptr;
     num_pairs = 0;
+    delete N;
 }
 
 
@@ -228,9 +239,15 @@ Dictionary::~Dictionary() {
 // size()
 // Returns the size of this Dictionary.
 int Dictionary::size() const {
+    // std::cout << "size: " << num_pairs << std::endl;
+
     if (num_pairs < 0) {
         throw std::length_error("Dictionary: size: num out of bounds");
     }
+    // if (num_pairs >= 2) {
+    //     return num_pairs+1;
+    // }
+    // std::cout << "SIZE:: " << num_pairs << "\n";
     return (num_pairs);
 }
 
@@ -284,6 +301,7 @@ valType& Dictionary::currentVal() const {
     if (hasCurrent() == false) {
         throw std::logic_error("Dictionary: currentVal: current is not defined");
     }
+    // std::cout << "CURRENT VAL " << current->val << std::endl;
     return (current->val);
 }
 
@@ -304,6 +322,7 @@ void Dictionary::clear() {
 // If a pair with key==k exists, overwrites the corresponding value with v, 
 // otherwise inserts the new pair (k, v).
 void Dictionary::setValue(keyType k, valType v) {
+    // std::cout << to_string() << std::endl;
     // std::cout << "huh" << std::endl;
     // Node* N = search(root, k);
     // if (N != nil) {
@@ -328,24 +347,23 @@ void Dictionary::setValue(keyType k, valType v) {
             //     std::cout << "5" << std::endl;
             // }
             x = x->left;
-            
+            continue;
         }
         else if (z->key.compare(x->key) == 0) {
-            // std::cout << "2" << std::endl;
+            // std::cout << "GAMING:::::" << to_string() << std::endl;
             x->val = z->val;
             delete z;
             return;
         }
-        else {
             // std::cout << "3" << std::endl;
-            x = x->right;
-        }
+        x = x->right;
         // std::cout << "huh78" << std::endl;
     }
     // std::cout << "huh3" << std::endl;
     z->parent = y;
     if (y == nil) {
         root = z;
+        
         // std::cout << "huh7890" << std::endl;
     }
     else if (z->key.compare(y->key) < 0) {
@@ -355,6 +373,8 @@ void Dictionary::setValue(keyType k, valType v) {
         y->right = z;
     }
     // std::cout << "huh4" << std::endl;
+        // std::cout << "size: " << num_pairs << std::endl;
+
     num_pairs++;
 
 }
@@ -382,6 +402,9 @@ void Dictionary::Transplant(Node* u, Node* v) {
 // Pre: contains(k).
 void Dictionary::remove(keyType k) {
     Node* z = search(root, k);
+    if (z == nil) {
+        return;
+    }
     if (z == current) {
         current = nil;
     }
@@ -411,9 +434,13 @@ void Dictionary::remove(keyType k) {
 // If non-empty, places current iterator at the first (key, value) pair
 // (as defined by the order operator < on keys), otherwise does nothing. 
 void Dictionary::begin() {
+    // std::cout << to_string() << std::endl;
     if (num_pairs != 0) {
         current = findMin(root);
+
+        
     }
+    // std::cout << "key: " << current->key << " val: " << current->val << std::endl;
 }
 
 // end()
@@ -435,7 +462,7 @@ void Dictionary::next() {
         if (current != findMax(root)) {
             current = findNext(current);
         }
-        if (current == findMax(root)) {
+        else if (current == findMax(root)) {
             current = nil;
         }
     }
@@ -455,7 +482,7 @@ void Dictionary::prev() {
         if (current != findMin(root)) {
             current = findPrev(current);
         }
-        if (current == findMin(root)) {
+        else if (current == findMin(root)) {
             current = nil;
         }
     }
@@ -473,6 +500,7 @@ void Dictionary::prev() {
 // in order, as defined by the order operator <.
 std::string Dictionary::to_string() const {
     std::string s = "";
+    // std::cout << "root: " << root->key << " val: " << root->val << std::endl;
     inOrderString(s, root);
     return s;
 

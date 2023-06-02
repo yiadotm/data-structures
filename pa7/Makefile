@@ -40,7 +40,7 @@ clean:
 	$(REMOVE) $(MAIN) $(ADT_TEST) $(OBJECT) $(ADT_TEST).o $(ADT_OBJECT)
 
 $(MAIN)Check: $(MAIN)
-	$(MEMCHECK) $(MAIN) in5 junk5
+	$(MEMCHECK) ./$(MAIN) infile1.txt out.txt
 
 $(ADT)Check: $(ADT_TEST)
-	$(MEMCHECK) $(ADT_TEST)
+	$(MEMCHECK) ./$(ADT_TEST)
