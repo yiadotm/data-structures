@@ -14,165 +14,43 @@ using namespace std;
 
 int main(){
 
-   string s;
-   int x;
-   string S[] =   {
-                     "plaices",
-                     "ambusher",
-                     "crosby",
-                     "wattles",
-                     "pardoner",
-                     "pythons",
-                     "second",
-                     "forms",
-                     "impales",
-                     "pic",
-                     "verticals",
-                     "recriminator",
-                     "depressants",
-                     "cul",
-                     "potables",
-                     "norm",
-                     "reinsurer",
-                     "deschooler",
-                     "recoining",
-                     "dissocialised",
-                     "cohabit",
-                     "hemiolia",
-                     "cantling",
-                     "glamorized",
-                     "millesimal",
-                     "glagolitic"
-                  };
-   string T[] =   {
-                     "second",
-                     "forms",
-                     "impales",
-                     "pic",
-                     "verticals",
-                     "recriminator",
-                     "depressants",
-                     "cul",
-                     "potables",
-                     "norm",
-                     "reinsurer",
-                     "deschooler",
-                     "recoining",      
-                  };
-   cout << "here3" << endl;
    Dictionary A;
-      cout << "here4" << endl;
    Dictionary B;
-
-   cout << endl;
-    cout << "here" << endl;
-   // insert some pairs into A
-   for(int i=0; i<26; i++){
-        cout << "here243" << endl;
-      A.setValue(S[i], i+1);
-      cout << A.to_string() << endl;
-        cout << "here12" << endl;
-   }
-   cout << "here2" << endl;
-   // call operator=()
-   B = A;
-
+   Dictionary C;
+   A.setValue("a", 1);   
+   A.setValue("b", 2);   
+   A.setValue("c", 3);   
+   A.setValue("d", 4);   
+   A.setValue("e", 5);   
+   A.setValue("f", 6);   
+   B.setValue("z", 1);
+   B.setValue("y", 2);
+   B.setValue("x", 3);
+   B.setValue("w", 4);
+   B.setValue("v", 5);
+   C = B;
    cout << "A.size() = " << A.size() << endl  << A << endl;
-   cout << "B.size() = " << B.size() << endl  << B << endl;
-
-   B.setValue("deschooler", 101);
-   B.setValue("reinsurer", 102);
-   B.setValue("glagolitic", 103);
-   B.setValue("cul", 104);
-   B.setValue("ambusher", 105);
-
-   // call copy constructor
-   Dictionary C = B;
-
    cout << "B.size() = " << B.size() << endl  << B << endl;
    cout << "C.size() = " << C.size() << endl  << C << endl;
 
-   // check operator==()
-   cout << "A==B is " << (A==B?"true":"false") << endl;
-   cout << "B==C is " << (B==C?"true":"false") << endl;
-   cout << "C==A is " << (C==A?"true":"false") << endl << endl;
-
-   // perform alterations on A
-   cout << A.getValue("hemiolia") << endl;
-   A.getValue("hemiolia") *= 10; // change the value associated with "hemiolia"
-   cout << A.getValue("hemiolia") << endl << endl;
-
-   // check state of A
+   cout << "A==B is " << (A==B?"true":"false") << endl << endl;
+   cout << "Remove b and z" << endl;
+   A.remove("b");
+   B.remove("z");
    cout << "A.size() = " << A.size() << endl  << A << endl;
+   cout << "B.size() = " << B.size() << endl  << B << endl;
+   cout << "C.size() = " << C.size() << endl  << C << endl;
+   cout << "prestring: " << endl;
    cout << A.pre_string() << endl;
 
-   // remove some pairs from A
-   for(int i=0; i<13; i++){
-      cout << "removing " << T[i] << " from Dictionary A" << endl; 
-      A.remove(T[i]);
-   }
-
-   cout << "after remove loop" << endl;
-
-   // check state of A
-   cout << "A.size() = " << A.size() << endl  << A << endl;
-   cout << A.pre_string() << endl;
-
-   // do forward iteration on A
+   cout << "test begin next and has current" << endl;
    for(A.begin(); A.hasCurrent(); A.next()){
-      s = A.currentKey();
-      x = A.currentVal();
-      cout << "("+s+", " << x << ") ";
+      cout<< A.currentKey() <<", " << A.currentVal() << "  " << endl;
    }
-   cout << endl << endl;
-
-   // do reverse iteration on A
+   cout << endl << "test end prev and has current" << endl;
    for(A.end(); A.hasCurrent(); A.prev()){
-      s = A.currentKey();
-      x = A.currentVal();
-      cout << "("+s+", " << x << ") ";
+      cout<< A.currentKey() <<", " << A.currentVal() << "  " << endl;
    }
-   cout << endl << endl;
-   
-   // check exceptions
-   try{
-      A.getValue("blah");
-   }catch(logic_error& e){
-      cout << e.what() << endl;
-      cout << "   continuing without interruption" << endl;
-   }
-   try{
-      A.remove("blah");
-   }catch(logic_error& e){
-      cout << e.what() << endl;
-      cout << "   continuing without interruption" << endl;
-   }
-   try{
-      A.currentKey();
-   }catch(logic_error& e){
-      cout << e.what() << endl;
-      cout << "   continuing without interruption" << endl;
-   }
-   try{
-      A.currentVal();
-   }catch(logic_error& e){
-      cout << e.what() << endl;
-      cout << "   continuing without interruption" << endl;
-   }  
-   try{
-      A.next();
-   }catch(logic_error& e){
-      cout << e.what() << endl;
-      cout << "   continuing without interruption" << endl;
-   }
-   try{
-      A.prev();
-   }catch(logic_error& e){
-      cout << e.what() << endl;
-      cout << "   continuing without interruption" << endl;
-   }
-
-   cout << endl;  
 
    return( EXIT_SUCCESS );
 }
