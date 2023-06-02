@@ -15,7 +15,7 @@
 
 #### To run Order:  
 > make Order  
-> ./Order *input*   
+> ./Order *input* *output*  
 
 #### To run DictionaryTest:  
 > make DictionaryTest  
