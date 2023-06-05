@@ -11,6 +11,9 @@
 #include <string.h>
 #include "Dictionary.h"
 
+#define BLACK 0
+#define RED 1
+
 // Private Constructor --------------------------------------------------------
 
 // Node constructor, black = 0, red = 1;
@@ -20,7 +23,7 @@ Dictionary::Node::Node(keyType k, valType v) {
     parent = nullptr;
     left = nullptr;
     right = nullptr;
-    color = 0;
+    color = BLACK;
 }
 
 
@@ -57,13 +60,49 @@ void Dictionary::preOrderString(std::string& s, Node* R) const {
 }
 
 
+// BST_insert()
+// Inserts a copy of the Node *M into this Dictionary. Used by preOrderCopy().
+void Dictionary::BST_insert(Node* M) {
+    Node* y = nil;
+    Node* x = root;
+    Node* z = new Node(M->key, M->val);
+    while (x != nil) {
+        y = x;
+        if (M->key < x->key) {
+            x = x->left;
+        }
+        // else if (M->key < x->key) {
+        //     x = M;
+        //     return;
+        // }
+        else {
+            x = x->right;
+        }
+    }
+    z->parent = y;
+    if (y == nil) {
+        root = z;
+    }
+    else if (M->key < y->key) {
+        y->left = z;
+    }
+    else {
+        y->right = z;
+    }
+    z->left = nil;
+    z->right = nil;
+    z->color = RED;
+    num_pairs++;
+    RB_InsertFixUp(z);
+}
+
 // preOrderCopy()
 // Recursively inserts a deep copy of the subtree rooted at R into this 
 // Dictionary. Recursion terminates at N.
 void Dictionary::preOrderCopy(Node* R, Node* N) {
     if (R != N) {
 
-        setValue(R->key, R->val);
+        BST_insert(R);
         preOrderCopy(R->left, N);
         preOrderCopy(R->right, N);
 
@@ -178,6 +217,69 @@ Dictionary::Node* Dictionary::findPrev(Node* N) {
         y = y->parent;
     }
     return y;
+}
+
+// RBT Helper Functions (Optional) -----------------------------------------
+
+// LeftRotate()
+void Dictionary::LeftRotate(Node* N) {
+    Node* y = N->right;
+    N->right = y->left;
+    if (y->left != nil) {
+        y->left->parent = N;
+    }
+    y->parent = N->parent;
+    if (N->parent == nil) {
+        root = y;
+    }
+    else if (N == N->parent->left) {
+        N->parent->left = y;
+    }
+    else {
+        N->parent->right = y;
+    }
+    y->left = N;
+    N->parent = y;
+}
+
+// RightRotate()
+void Dictionary::RightRotate(Node* N) {
+    Node* y = N->left;
+    N->left = y->right;
+    if (y->right != nil) {
+        y->right->parent = N;
+    }
+    y->parent = N->parent;
+    if (N->parent == nil) {
+        root = y;
+    }
+    else if (N == N->parent->right) {
+        N->parent->right = y;
+    }
+    else {
+        N->parent->left = y;
+    }
+    y->right = N;
+    N->parent = y;
+}
+
+// RB_InsertFixUP()
+void Dictionary::RB_InsertFixUp(Node* N) {
+
+}
+
+// RB_Transplant()
+void Dictionary::RB_Transplant(Node* u, Node* v) {
+
+}
+// RB_DeleteFixUp()
+void Dictionary::RB_DeleteFixUp(Node* N) {
+
+}
+
+// RB_Delete()
+void Dictionary::RB_Delete(Node* N) {
+
 }
 
 // Class Constructors & Destructors ----------------------------------------
@@ -380,22 +482,7 @@ void Dictionary::setValue(keyType k, valType v) {
 
 }
 
-// Transplant()
-// Replaces node u with node v and relinks all the nodes.
-void Dictionary::Transplant(Node* u, Node* v) {
-    if (u->parent == nil) {
-        root = v;
-    }
-    else if (u == u->parent->left) {
-        u->parent->left = v;
-    }
-    else {
-        u->parent->right = v;
-    }
-    if (v != nil) {
-        v->parent = u->parent;
-    }
-}
+
 
 // remove()
 // Deletes the pair for which key==k. If that pair is current, then current
